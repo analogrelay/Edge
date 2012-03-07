@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 11
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge", "Edge\Edge.csproj", "{DBF3E801-50B9-4725-9755-67FF118E9B0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EdgeDemo", "EdgeDemo\EdgeDemo.csproj", "{D147DA9E-418A-4523-BECD-710E7CD62C9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBF3E801-50B9-4725-9755-67FF118E9B0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBF3E801-50B9-4725-9755-67FF118E9B0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBF3E801-50B9-4725-9755-67FF118E9B0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBF3E801-50B9-4725-9755-67FF118E9B0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

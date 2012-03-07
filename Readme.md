@@ -1,0 +1,1 @@
+This is a super basic Razor-based framework written on Owin/Gate. To test it, clone the repo and run: "LaunchEdgeDemo.cmd" from the root
