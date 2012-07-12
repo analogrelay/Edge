@@ -1,0 +1,1 @@
+These files are from the PUBLIC Roslyn June 2012 CTP available here: http://www.microsoft.com/en-us/download/details.aspx?id=27746

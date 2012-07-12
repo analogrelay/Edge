@@ -1,0 +1,612 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Roslyn.Services.Editor.CSharp</name>
+    </assembly>
+    <members>
+        <member name="T:Roslyn.Services.Editor.CSharp.Classification.SyntacticClassifier">
+            <summary>
+            A classifier for C# code that operates only on the syntax of the source and not the
+            semantics.  Note: this class operates in a hybrid sync/async manner.  Specifically, while
+            classification happens synchronously, it may be synchronous over a parse tree which is out
+            of date.  Then, asynchronously, we will attempt to get an up to date parse tree for the file.
+            When we do, we will determine which sections of the file changed and we will use that to
+            notify the editor about what needs to be reclassified.
+            </summary>
+        </member>
+        <member name="T:Roslyn.Services.Editor.CSharp.Classification.SyntacticClassifier.Worker`1">
+            <summary>
+            Worker is an utility class that can classify a list of tokens or a tree within a requested span
+            The implementation is generic and can produce any kind of classification artefacts T
+            T is normally either ClassificationSpan or a Tuple (for testing purposes) 
+            and constructed via provided factory.
+            </summary>
+        </member>
+        <member name="F:Roslyn.Services.Editor.CSharp.Classification.SyntacticClassifier.Worker`1.nonOverlappingSpans">
+            <summary>
+            nonOverlappingSpans spans used for Debug validation that
+            spans that worker produces are not mutually overlapping.
+            </summary>
+        </member>
+        <member name="T:Roslyn.Services.Editor.CSharp.CodeActions.InlineTemporary.InlineTemporaryCodeRefactoringProvider.InitializerSimplifier">
+            <summary>
+            This class handles rewriting initializer expressions that refer to the variable
+            being initialized into a simpler form.  For example, in "int x = x = 1", we want to
+            get just "1" back as the initializer.
+            </summary>
+        </member>
+        <member name="F:Roslyn.Services.Editor.CSharp.ContentType.ContentTypeDefinitions.CSharpContentTypeDefinition">
+            <summary>
+            Definition of the primary C# content type.
+            </summary>
+        </member>
+        <member name="T:Roslyn.Services.Editor.CSharp.ContentType.FileExtensionMappings">
+            <summary>
+            Mappings of file extensions supported by the C# editor to C# content type.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.Debugging.BreakpointGetter.TryCreateBreakpointSpanForQueryClause(Roslyn.Compilers.CSharp.QueryClauseSyntax,Roslyn.Compilers.CSharp.SyntaxToken)">
+            <summary>
+            This code is used when the user's initial location is on a query keyword itself (as
+            opposed to inside an expression inside the query clause).  It places the bp on the
+            appropriate child expression in the clause.
+            </summary>
+        </member>
+        <member name="T:Roslyn.Services.Editor.CSharp.Debugging.CSharpProximityExpressionsService">
+            <summary>
+            Given a position in a source file, returns the expressions in close proximity that should
+            show up in the debugger 'autos' window.  In general, the expressions we place into the autos
+            window are things that appear to be 'side effect free'.  Note: because we only use the syntax
+            tree for this, it's possible for us to get this wrong.  However, this should only happen in
+            code that behaves unexpectedly.  For example, we will assume that "a + b" is side effect free
+            (when in practice it may not be).  
+            
+            The general tactic we take is to add the expressions for the statements on the
+            line the debugger is currently at.  We will also try to find the 'previous' statement as well
+            to add the expressions from that.  The 'previous' statement is a bit of an interesting beast.
+            Consider, for example, if the user has just jumped out of a switch and is the statement
+            directly following it.  What is the previous statement?  Without keeping state, there's no way
+            to know.  So, in this case, we treat all 'exit points' (i.e. the last statement of a switch
+            section) of the switch statement as the 'previous statement'.  There are many cases like this
+            we need to handle.  Basically anything that might have nested statements/blocks might
+            contribute to the 'previous statement'
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.KeywordHighlighting.KeywordHighlighters.LoopHighlighter.HighlightRelatedKeywords(Roslyn.Compilers.CSharp.SyntaxNode,System.Collections.Generic.List{Roslyn.Compilers.TextSpan},System.Boolean,System.Boolean)">
+            <summary>
+            Finds all breaks and continues that are a child of this node, and adds the appropriate spans to the spans list.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.KeywordHighlighting.KeywordHighlighters.ReturnStatementHighlighter.HighlightRelatedKeywords(Roslyn.Compilers.CSharp.SyntaxNode,System.Collections.Generic.List{Roslyn.Compilers.TextSpan})">
+            <summary>
+            Finds all returns that are chldren of this node, and adds the appropriate spans to the spans list.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.KeywordHighlighting.KeywordHighlighters.SwitchStatementHighlighter.HighlightRelatedKeywords(Roslyn.Compilers.CSharp.SyntaxNode,System.Collections.Generic.List{Roslyn.Compilers.TextSpan})">
+            <summary>
+            Finds all breaks and continues that are a child of this node, and adds the appropriate spans to the spans
+            list.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.KeywordHighlighting.KeywordHighlighters.YieldStatementHighlighter.HighlightRelatedKeywords(Roslyn.Compilers.CSharp.SyntaxNode,System.Collections.Generic.List{Roslyn.Compilers.TextSpan})">
+            <summary>
+            Finds all returns that are chldren of this node, and adds the appropriate spans to the spans list.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.LineSeparator.CSharpLineSeparatorService.GetLineSeparators(Roslyn.Services.IDocument,Roslyn.Compilers.TextSpan,System.Threading.CancellationToken)">
+            <summary>
+            Given a tree returns line separator spans.
+            The operation may take fairly long time on a big tree so it is cancelable.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.LineSeparator.CSharpLineSeparatorService.IsSeparableBlock(Roslyn.Compilers.CSharp.SyntaxNode)">
+            <summary>Node types that are interesting for line separation.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.LineSeparator.CSharpLineSeparatorService.IsSeparableContainer(Roslyn.Compilers.Common.CommonSyntaxNode)">
+            <summary>Node types that may contain separable blocks.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.LineSeparator.CSharpLineSeparatorService.ProcessNodeList``1(Roslyn.Compilers.CSharp.SyntaxList{``0},System.Collections.Generic.List{Roslyn.Compilers.TextSpan},System.Threading.CancellationToken)">
+            <summary>
+            If node is separable and not the last in its container => add line separator after the node
+            If node is separable and not the first in its container => ensure separator before the node
+            last separable node in Program needs separator after it.
+            </summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitIdentifierName(Roslyn.Compilers.CSharp.IdentifierNameSyntax)">
+            <summary>Called when the visitor visits a IdentifierNameSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitQualifiedName(Roslyn.Compilers.CSharp.QualifiedNameSyntax)">
+            <summary>Called when the visitor visits a QualifiedNameSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitGenericName(Roslyn.Compilers.CSharp.GenericNameSyntax)">
+            <summary>Called when the visitor visits a GenericNameSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTypeArgumentList(Roslyn.Compilers.CSharp.TypeArgumentListSyntax)">
+            <summary>Called when the visitor visits a TypeArgumentListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAliasQualifiedName(Roslyn.Compilers.CSharp.AliasQualifiedNameSyntax)">
+            <summary>Called when the visitor visits a AliasQualifiedNameSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPredefinedType(Roslyn.Compilers.CSharp.PredefinedTypeSyntax)">
+            <summary>Called when the visitor visits a PredefinedTypeSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitArrayType(Roslyn.Compilers.CSharp.ArrayTypeSyntax)">
+            <summary>Called when the visitor visits a ArrayTypeSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitArrayRankSpecifier(Roslyn.Compilers.CSharp.ArrayRankSpecifierSyntax)">
+            <summary>Called when the visitor visits a ArrayRankSpecifierSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPointerType(Roslyn.Compilers.CSharp.PointerTypeSyntax)">
+            <summary>Called when the visitor visits a PointerTypeSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitNullableType(Roslyn.Compilers.CSharp.NullableTypeSyntax)">
+            <summary>Called when the visitor visits a NullableTypeSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitParenthesizedExpression(Roslyn.Compilers.CSharp.ParenthesizedExpressionSyntax)">
+            <summary>Called when the visitor visits a ParenthesizedExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPrefixUnaryExpression(Roslyn.Compilers.CSharp.PrefixUnaryExpressionSyntax)">
+            <summary>Called when the visitor visits a PrefixUnaryExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPostfixUnaryExpression(Roslyn.Compilers.CSharp.PostfixUnaryExpressionSyntax)">
+            <summary>Called when the visitor visits a PostfixUnaryExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitMemberAccessExpression(Roslyn.Compilers.CSharp.MemberAccessExpressionSyntax)">
+            <summary>Called when the visitor visits a MemberAccessExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBinaryExpression(Roslyn.Compilers.CSharp.BinaryExpressionSyntax)">
+            <summary>Called when the visitor visits a BinaryExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitConditionalExpression(Roslyn.Compilers.CSharp.ConditionalExpressionSyntax)">
+            <summary>Called when the visitor visits a ConditionalExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitThisExpression(Roslyn.Compilers.CSharp.ThisExpressionSyntax)">
+            <summary>Called when the visitor visits a ThisExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBaseExpression(Roslyn.Compilers.CSharp.BaseExpressionSyntax)">
+            <summary>Called when the visitor visits a BaseExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitLiteralExpression(Roslyn.Compilers.CSharp.LiteralExpressionSyntax)">
+            <summary>Called when the visitor visits a LiteralExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitMakeRefExpression(Roslyn.Compilers.CSharp.MakeRefExpressionSyntax)">
+            <summary>Called when the visitor visits a MakeRefExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitRefTypeExpression(Roslyn.Compilers.CSharp.RefTypeExpressionSyntax)">
+            <summary>Called when the visitor visits a RefTypeExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitRefValueExpression(Roslyn.Compilers.CSharp.RefValueExpressionSyntax)">
+            <summary>Called when the visitor visits a RefValueExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitCheckedExpression(Roslyn.Compilers.CSharp.CheckedExpressionSyntax)">
+            <summary>Called when the visitor visits a CheckedExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitDefaultExpression(Roslyn.Compilers.CSharp.DefaultExpressionSyntax)">
+            <summary>Called when the visitor visits a DefaultExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTypeOfExpression(Roslyn.Compilers.CSharp.TypeOfExpressionSyntax)">
+            <summary>Called when the visitor visits a TypeOfExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSizeOfExpression(Roslyn.Compilers.CSharp.SizeOfExpressionSyntax)">
+            <summary>Called when the visitor visits a SizeOfExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitInvocationExpression(Roslyn.Compilers.CSharp.InvocationExpressionSyntax)">
+            <summary>Called when the visitor visits a InvocationExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitElementAccessExpression(Roslyn.Compilers.CSharp.ElementAccessExpressionSyntax)">
+            <summary>Called when the visitor visits a ElementAccessExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBracketedArgumentList(Roslyn.Compilers.CSharp.BracketedArgumentListSyntax)">
+            <summary>Called when the visitor visits a BracketedArgumentListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitNameColon(Roslyn.Compilers.CSharp.NameColonSyntax)">
+            <summary>Called when the visitor visits a NameColonSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitCastExpression(Roslyn.Compilers.CSharp.CastExpressionSyntax)">
+            <summary>Called when the visitor visits a CastExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAnonymousMethodExpression(Roslyn.Compilers.CSharp.AnonymousMethodExpressionSyntax)">
+            <summary>Called when the visitor visits a AnonymousMethodExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSimpleLambdaExpression(Roslyn.Compilers.CSharp.SimpleLambdaExpressionSyntax)">
+            <summary>Called when the visitor visits a SimpleLambdaExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitParenthesizedLambdaExpression(Roslyn.Compilers.CSharp.ParenthesizedLambdaExpressionSyntax)">
+            <summary>Called when the visitor visits a ParenthesizedLambdaExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitInitializerExpression(Roslyn.Compilers.CSharp.InitializerExpressionSyntax)">
+            <summary>Called when the visitor visits a InitializerExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitObjectCreationExpression(Roslyn.Compilers.CSharp.ObjectCreationExpressionSyntax)">
+            <summary>Called when the visitor visits a ObjectCreationExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAnonymousObjectCreationExpression(Roslyn.Compilers.CSharp.AnonymousObjectCreationExpressionSyntax)">
+            <summary>Called when the visitor visits a AnonymousObjectCreationExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitArrayCreationExpression(Roslyn.Compilers.CSharp.ArrayCreationExpressionSyntax)">
+            <summary>Called when the visitor visits a ArrayCreationExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitImplicitArrayCreationExpression(Roslyn.Compilers.CSharp.ImplicitArrayCreationExpressionSyntax)">
+            <summary>Called when the visitor visits a ImplicitArrayCreationExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitStackAllocArrayCreationExpression(Roslyn.Compilers.CSharp.StackAllocArrayCreationExpressionSyntax)">
+            <summary>Called when the visitor visits a StackAllocArrayCreationExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitQueryExpression(Roslyn.Compilers.CSharp.QueryExpressionSyntax)">
+            <summary>Called when the visitor visits a QueryExpressionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitFromClause(Roslyn.Compilers.CSharp.FromClauseSyntax)">
+            <summary>Called when the visitor visits a FromClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitLetClause(Roslyn.Compilers.CSharp.LetClauseSyntax)">
+            <summary>Called when the visitor visits a LetClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitJoinClause(Roslyn.Compilers.CSharp.JoinClauseSyntax)">
+            <summary>Called when the visitor visits a JoinClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitJoinIntoClause(Roslyn.Compilers.CSharp.JoinIntoClauseSyntax)">
+            <summary>Called when the visitor visits a JoinIntoClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitWhereClause(Roslyn.Compilers.CSharp.WhereClauseSyntax)">
+            <summary>Called when the visitor visits a WhereClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitOrderByClause(Roslyn.Compilers.CSharp.OrderByClauseSyntax)">
+            <summary>Called when the visitor visits a OrderByClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitOrdering(Roslyn.Compilers.CSharp.OrderingSyntax)">
+            <summary>Called when the visitor visits a OrderingSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSelectClause(Roslyn.Compilers.CSharp.SelectClauseSyntax)">
+            <summary>Called when the visitor visits a SelectClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitGroupClause(Roslyn.Compilers.CSharp.GroupClauseSyntax)">
+            <summary>Called when the visitor visits a GroupClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitQueryContinuation(Roslyn.Compilers.CSharp.QueryContinuationSyntax)">
+            <summary>Called when the visitor visits a QueryContinuationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitGlobalStatement(Roslyn.Compilers.CSharp.GlobalStatementSyntax)">
+            <summary>Called when the visitor visits a GlobalStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBlock(Roslyn.Compilers.CSharp.BlockSyntax)">
+            <summary>Called when the visitor visits a BlockSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitLocalDeclarationStatement(Roslyn.Compilers.CSharp.LocalDeclarationStatementSyntax)">
+            <summary>Called when the visitor visits a DeclarationStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitVariableDeclaration(Roslyn.Compilers.CSharp.VariableDeclarationSyntax)">
+            <summary>Called when the visitor visits a VariableDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitVariableDeclarator(Roslyn.Compilers.CSharp.VariableDeclaratorSyntax)">
+            <summary>Called when the visitor visits a VariableDeclaratorSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEqualsValueClause(Roslyn.Compilers.CSharp.EqualsValueClauseSyntax)">
+            <summary>Called when the visitor visits a EqualsValueClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitExpressionStatement(Roslyn.Compilers.CSharp.ExpressionStatementSyntax)">
+            <summary>Called when the visitor visits a ExpressionStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEmptyStatement(Roslyn.Compilers.CSharp.EmptyStatementSyntax)">
+            <summary>Called when the visitor visits a EmptyStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitLabeledStatement(Roslyn.Compilers.CSharp.LabeledStatementSyntax)">
+            <summary>Called when the visitor visits a LabeledStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitGotoStatement(Roslyn.Compilers.CSharp.GotoStatementSyntax)">
+            <summary>Called when the visitor visits a GotoStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBreakStatement(Roslyn.Compilers.CSharp.BreakStatementSyntax)">
+            <summary>Called when the visitor visits a BreakStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitContinueStatement(Roslyn.Compilers.CSharp.ContinueStatementSyntax)">
+            <summary>Called when the visitor visits a ContinueStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitReturnStatement(Roslyn.Compilers.CSharp.ReturnStatementSyntax)">
+            <summary>Called when the visitor visits a ReturnStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitThrowStatement(Roslyn.Compilers.CSharp.ThrowStatementSyntax)">
+            <summary>Called when the visitor visits a ThrowStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitYieldStatement(Roslyn.Compilers.CSharp.YieldStatementSyntax)">
+            <summary>Called when the visitor visits a YieldStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitWhileStatement(Roslyn.Compilers.CSharp.WhileStatementSyntax)">
+            <summary>Called when the visitor visits a WhileStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitDoStatement(Roslyn.Compilers.CSharp.DoStatementSyntax)">
+            <summary>Called when the visitor visits a DoStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitForStatement(Roslyn.Compilers.CSharp.ForStatementSyntax)">
+            <summary>Called when the visitor visits a ForStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitForEachStatement(Roslyn.Compilers.CSharp.ForEachStatementSyntax)">
+            <summary>Called when the visitor visits a ForEachStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitUsingStatement(Roslyn.Compilers.CSharp.UsingStatementSyntax)">
+            <summary>Called when the visitor visits a UsingStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitFixedStatement(Roslyn.Compilers.CSharp.FixedStatementSyntax)">
+            <summary>Called when the visitor visits a FixedStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitCheckedStatement(Roslyn.Compilers.CSharp.CheckedStatementSyntax)">
+            <summary>Called when the visitor visits a CheckedStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitUnsafeStatement(Roslyn.Compilers.CSharp.UnsafeStatementSyntax)">
+            <summary>Called when the visitor visits a UnsafeStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitLockStatement(Roslyn.Compilers.CSharp.LockStatementSyntax)">
+            <summary>Called when the visitor visits a LockStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitIfStatement(Roslyn.Compilers.CSharp.IfStatementSyntax)">
+            <summary>Called when the visitor visits a IfStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitElseClause(Roslyn.Compilers.CSharp.ElseClauseSyntax)">
+            <summary>Called when the visitor visits a ElseClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSwitchStatement(Roslyn.Compilers.CSharp.SwitchStatementSyntax)">
+            <summary>Called when the visitor visits a SwitchStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSwitchSection(Roslyn.Compilers.CSharp.SwitchSectionSyntax)">
+            <summary>Called when the visitor visits a SwitchSectionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSwitchLabel(Roslyn.Compilers.CSharp.SwitchLabelSyntax)">
+            <summary>Called when the visitor visits a SwitchLabelSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTryStatement(Roslyn.Compilers.CSharp.TryStatementSyntax)">
+            <summary>Called when the visitor visits a TryStatementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitCatchClause(Roslyn.Compilers.CSharp.CatchClauseSyntax)">
+            <summary>Called when the visitor visits a CatchClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitCatchDeclaration(Roslyn.Compilers.CSharp.CatchDeclarationSyntax)">
+            <summary>Called when the visitor visits a CatchDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitFinallyClause(Roslyn.Compilers.CSharp.FinallyClauseSyntax)">
+            <summary>Called when the visitor visits a FinallyClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitCompilationUnit(Roslyn.Compilers.CSharp.CompilationUnitSyntax)">
+            <summary>Called when the visitor visits a CompilationUnitSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitExternAliasDirective(Roslyn.Compilers.CSharp.ExternAliasDirectiveSyntax)">
+            <summary>Called when the visitor visits a ExternAliasDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitUsingDirective(Roslyn.Compilers.CSharp.UsingDirectiveSyntax)">
+            <summary>Called when the visitor visits a UsingDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitNamespaceDeclaration(Roslyn.Compilers.CSharp.NamespaceDeclarationSyntax)">
+            <summary>Called when the visitor visits a NamespaceDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAttributeDeclaration(Roslyn.Compilers.CSharp.AttributeDeclarationSyntax)">
+            <summary>Called when the visitor visits a AttributeDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAttributeTargetSpecifier(Roslyn.Compilers.CSharp.AttributeTargetSpecifierSyntax)">
+            <summary>Called when the visitor visits a AttributeTargetSpecifierSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAttribute(Roslyn.Compilers.CSharp.AttributeSyntax)">
+            <summary>Called when the visitor visits a AttributeSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAttributeArgumentList(Roslyn.Compilers.CSharp.AttributeArgumentListSyntax)">
+            <summary>Called when the visitor visits a AttributeArgumentListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAttributeArgument(Roslyn.Compilers.CSharp.AttributeArgumentSyntax)">
+            <summary>Called when the visitor visits a AttributeArgumentSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitNameEquals(Roslyn.Compilers.CSharp.NameEqualsSyntax)">
+            <summary>Called when the visitor visits a NameEqualsSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTypeParameterList(Roslyn.Compilers.CSharp.TypeParameterListSyntax)">
+            <summary>Called when the visitor visits a TypeParameterListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTypeParameter(Roslyn.Compilers.CSharp.TypeParameterSyntax)">
+            <summary>Called when the visitor visits a TypeParameterSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitClassDeclaration(Roslyn.Compilers.CSharp.ClassDeclarationSyntax)">
+            <summary>Called when the visitor visits a ClassDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitStructDeclaration(Roslyn.Compilers.CSharp.StructDeclarationSyntax)">
+            <summary>Called when the visitor visits a StructDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitInterfaceDeclaration(Roslyn.Compilers.CSharp.InterfaceDeclarationSyntax)">
+            <summary>Called when the visitor visits a InterfaceDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEnumDeclaration(Roslyn.Compilers.CSharp.EnumDeclarationSyntax)">
+            <summary>Called when the visitor visits a EnumDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitDelegateDeclaration(Roslyn.Compilers.CSharp.DelegateDeclarationSyntax)">
+            <summary>Called when the visitor visits a DelegateDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEnumMemberDeclaration(Roslyn.Compilers.CSharp.EnumMemberDeclarationSyntax)">
+            <summary>Called when the visitor visits a EnumMemberDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBaseList(Roslyn.Compilers.CSharp.BaseListSyntax)">
+            <summary>Called when the visitor visits a BaseListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTypeParameterConstraintClause(Roslyn.Compilers.CSharp.TypeParameterConstraintClauseSyntax)">
+            <summary>Called when the visitor visits a TypeParameterConstraintClauseSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitConstructorConstraint(Roslyn.Compilers.CSharp.ConstructorConstraintSyntax)">
+            <summary>Called when the visitor visits a ConstructorConstraintSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitClassOrStructConstraint(Roslyn.Compilers.CSharp.ClassOrStructConstraintSyntax)">
+            <summary>Called when the visitor visits a ClassOrStructConstraintSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitTypeConstraint(Roslyn.Compilers.CSharp.TypeConstraintSyntax)">
+            <summary>Called when the visitor visits a TypeConstraintSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitFieldDeclaration(Roslyn.Compilers.CSharp.FieldDeclarationSyntax)">
+            <summary>Called when the visitor visits a FieldDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEventFieldDeclaration(Roslyn.Compilers.CSharp.EventFieldDeclarationSyntax)">
+            <summary>Called when the visitor visits a EventFieldDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitExplicitInterfaceSpecifier(Roslyn.Compilers.CSharp.ExplicitInterfaceSpecifierSyntax)">
+            <summary>Called when the visitor visits a ExplicitInterfaceSpecifierSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitMethodDeclaration(Roslyn.Compilers.CSharp.MethodDeclarationSyntax)">
+            <summary>Called when the visitor visits a MethodDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitOperatorDeclaration(Roslyn.Compilers.CSharp.OperatorDeclarationSyntax)">
+            <summary>Called when the visitor visits a OperatorDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitConversionOperatorDeclaration(Roslyn.Compilers.CSharp.ConversionOperatorDeclarationSyntax)">
+            <summary>Called when the visitor visits a ConversionOperatorDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitConstructorDeclaration(Roslyn.Compilers.CSharp.ConstructorDeclarationSyntax)">
+            <summary>Called when the visitor visits a ConstructorDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitConstructorInitializer(Roslyn.Compilers.CSharp.ConstructorInitializerSyntax)">
+            <summary>Called when the visitor visits a ConstructorInitializerSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitDestructorDeclaration(Roslyn.Compilers.CSharp.DestructorDeclarationSyntax)">
+            <summary>Called when the visitor visits a DestructorDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPropertyDeclaration(Roslyn.Compilers.CSharp.PropertyDeclarationSyntax)">
+            <summary>Called when the visitor visits a PropertyDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEventDeclaration(Roslyn.Compilers.CSharp.EventDeclarationSyntax)">
+            <summary>Called when the visitor visits a EventDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitIndexerDeclaration(Roslyn.Compilers.CSharp.IndexerDeclarationSyntax)">
+            <summary>Called when the visitor visits a IndexerDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAccessorList(Roslyn.Compilers.CSharp.AccessorListSyntax)">
+            <summary>Called when the visitor visits a AccessorListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitAccessorDeclaration(Roslyn.Compilers.CSharp.AccessorDeclarationSyntax)">
+            <summary>Called when the visitor visits a AccessorDeclarationSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitParameterList(Roslyn.Compilers.CSharp.ParameterListSyntax)">
+            <summary>Called when the visitor visits a ParameterListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBracketedParameterList(Roslyn.Compilers.CSharp.BracketedParameterListSyntax)">
+            <summary>Called when the visitor visits a BracketedParameterListSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitParameter(Roslyn.Compilers.CSharp.ParameterSyntax)">
+            <summary>Called when the visitor visits a ParameterSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitIncompleteMember(Roslyn.Compilers.CSharp.IncompleteMemberSyntax)">
+            <summary>Called when the visitor visits a IncompleteMemberSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitSkippedTokens(Roslyn.Compilers.CSharp.SkippedTokensSyntax)">
+            <summary>Called when the visitor visits a SkippedTokensSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitDocumentationComment(Roslyn.Compilers.CSharp.DocumentationCommentSyntax)">
+            <summary>Called when the visitor visits a DocumentationCommentSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlElement(Roslyn.Compilers.CSharp.XmlElementSyntax)">
+            <summary>Called when the visitor visits a XmlElementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlElementStartTag(Roslyn.Compilers.CSharp.XmlElementStartTagSyntax)">
+            <summary>Called when the visitor visits a XmlElementStartTagSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlElementEndTag(Roslyn.Compilers.CSharp.XmlElementEndTagSyntax)">
+            <summary>Called when the visitor visits a XmlElementEndTagSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlEmptyElement(Roslyn.Compilers.CSharp.XmlEmptyElementSyntax)">
+            <summary>Called when the visitor visits a XmlEmptyElementSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlName(Roslyn.Compilers.CSharp.XmlNameSyntax)">
+            <summary>Called when the visitor visits a XmlNameSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlPrefix(Roslyn.Compilers.CSharp.XmlPrefixSyntax)">
+            <summary>Called when the visitor visits a XmlPrefixSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlAttribute(Roslyn.Compilers.CSharp.XmlAttributeSyntax)">
+            <summary>Called when the visitor visits a XmlAttributeSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlText(Roslyn.Compilers.CSharp.XmlTextSyntax)">
+            <summary>Called when the visitor visits a XmlTextSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlCDataSection(Roslyn.Compilers.CSharp.XmlCDataSectionSyntax)">
+            <summary>Called when the visitor visits a XmlCDataSectionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlProcessingInstruction(Roslyn.Compilers.CSharp.XmlProcessingInstructionSyntax)">
+            <summary>Called when the visitor visits a XmlProcessingInstructionSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitXmlComment(Roslyn.Compilers.CSharp.XmlCommentSyntax)">
+            <summary>Called when the visitor visits a XmlCommentSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitIfDirective(Roslyn.Compilers.CSharp.IfDirectiveSyntax)">
+            <summary>Called when the visitor visits a IfDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitElifDirective(Roslyn.Compilers.CSharp.ElifDirectiveSyntax)">
+            <summary>Called when the visitor visits a ElifDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitElseDirective(Roslyn.Compilers.CSharp.ElseDirectiveSyntax)">
+            <summary>Called when the visitor visits a ElseDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEndIfDirective(Roslyn.Compilers.CSharp.EndIfDirectiveSyntax)">
+            <summary>Called when the visitor visits a EndIfDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitRegionDirective(Roslyn.Compilers.CSharp.RegionDirectiveSyntax)">
+            <summary>Called when the visitor visits a RegionDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitEndRegionDirective(Roslyn.Compilers.CSharp.EndRegionDirectiveSyntax)">
+            <summary>Called when the visitor visits a EndRegionDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitErrorDirective(Roslyn.Compilers.CSharp.ErrorDirectiveSyntax)">
+            <summary>Called when the visitor visits a ErrorDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitWarningDirective(Roslyn.Compilers.CSharp.WarningDirectiveSyntax)">
+            <summary>Called when the visitor visits a WarningDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitBadDirective(Roslyn.Compilers.CSharp.BadDirectiveSyntax)">
+            <summary>Called when the visitor visits a BadDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitDefineDirective(Roslyn.Compilers.CSharp.DefineDirectiveSyntax)">
+            <summary>Called when the visitor visits a DefineDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitUndefDirective(Roslyn.Compilers.CSharp.UndefDirectiveSyntax)">
+            <summary>Called when the visitor visits a UndefDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitLineDirective(Roslyn.Compilers.CSharp.LineDirectiveSyntax)">
+            <summary>Called when the visitor visits a LineDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPragmaWarningDirective(Roslyn.Compilers.CSharp.PragmaWarningDirectiveSyntax)">
+            <summary>Called when the visitor visits a PragmaWarningDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitPragmaChecksumDirective(Roslyn.Compilers.CSharp.PragmaChecksumDirectiveSyntax)">
+            <summary>Called when the visitor visits a PragmaChecksumDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.ExtractMethod.CSharpSelectionValidator.Validator.VisitReferenceDirective(Roslyn.Compilers.CSharp.ReferenceDirectiveSyntax)">
+            <summary>Called when the visitor visits a ReferenceDirectiveSyntax node.</summary>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.Rename.ConflictResolutionRewriter.RewriteExtensionMethodInvocation(Roslyn.Compilers.CSharp.InvocationExpressionSyntax,Roslyn.Compilers.CSharp.ExpressionSyntax,Roslyn.Compilers.CSharp.ArgumentListSyntax,Roslyn.Compilers.Common.IMethodSymbol)">
+            <summary>
+            Takes an invocation of an extension method and rewrites it to the non-extension-method
+            invocation.
+            </summary>
+            <param name="originalNode">The original node from the tree, before any rewriting has
+            been done.</param>
+            <param name="thisExpression">The "this" expression of the invocation.</param>
+            <param name="rewrittenArgumentList">The argument list of the original invocation, with
+            any rewriting having taken place for deeper conflicts.</param>
+            <param name="reducedExtensionMethod">The extension method we're invoking, in reduced
+            form.</param>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.Rename.ConflictResolutionRewriter.RewriteExtensionMethodInvocation(Roslyn.Compilers.CSharp.InvocationExpressionSyntax,Roslyn.Compilers.CSharp.ExpressionSyntax,Roslyn.Compilers.CSharp.ArgumentListSyntax,Roslyn.Compilers.Common.IMethodSymbol,System.Boolean)">
+            <summary>
+            Takes an invocation of an extension method and rewrites it to the non-extension-method
+            invocation.
+            </summary>
+            <param name="originalNode">The original node from the tree, before any rewriting has
+            been done.</param>
+            <param name="thisExpression">The "this" expression of the invocation.</param>
+            <param name="rewrittenArgumentList">The argument list of the original invocation, with
+            any rewriting having taken place for deeper conflicts.</param>
+            <param name="reducedExtensionMethod">The extension method we're invoking, in reduced
+            form.</param>
+            <param name="includeGenerics">Whether we should include generic type arguments for the method call.</param>
+        </member>
+        <member name="M:Roslyn.Services.Editor.CSharp.Extensions.IClassificationTypesExtensions.GetClassificationForToken(Roslyn.Services.Editor.IClassificationTypes,Roslyn.Compilers.CSharp.SyntaxToken,Roslyn.Compilers.CSharp.SyntaxTree)">
+            <summary>
+            Determine the classification type for a given token.
+            </summary>
+            <param name="classificationTypes">A classification service to retrieve classification types.</param>
+            <param name="token">The token.</param>
+            <param name="syntaxTree">The tree containing the token (can be null for tokens that are
+            unparented).</param>
+            <returns>The correct syntactic classification for the token.</returns>
+        </member>
+    </members>
+</doc>
