@@ -28,7 +28,7 @@ obj/
 
 
 # NuGet Package Restore means we don't need to check in packages/
-#packages/
+packages/
 *.mdf
 *.ldf
 TestResults/
