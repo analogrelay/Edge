@@ -14,13 +14,13 @@ namespace Edge
 {
     public class EdgeApplication
     {
-        public IFileSystem FileSystem { get; private set; }
-        public string VirtualRoot { get; private set; }
-        public IRouter Router { get; private set; }
-        public ICompilationManager Compiler { get; private set; }
-        public IPageExecutor Executor { get; private set; }
-        public IPageActivator Activator { get; private set; }
-        public ITraceFactory Tracer { get; private set; }
+        public IFileSystem FileSystem { get; protected set; }
+        public string VirtualRoot { get; protected set; }
+        public IRouter Router { get; protected set; }
+        public ICompilationManager Compiler { get; protected set; }
+        public IPageExecutor Executor { get; protected set; }
+        public IPageActivator Activator { get; protected set; }
+        public ITraceFactory Tracer { get; protected set; }
 
         // Consumers should use IoC or the Default UseEdge extension method to initialize this.
         public EdgeApplication(
@@ -30,7 +30,7 @@ namespace Edge
             ICompilationManager compiler, 
             IPageActivator activator, 
             IPageExecutor executor, 
-            ITraceFactory tracer)
+            ITraceFactory tracer) : this()
         {
             Requires.NotNull(fileSystem, "fileSystem");
             Requires.NotNullOrEmpty(virtualRoot, "virtualRoot");
@@ -47,6 +47,13 @@ namespace Edge
             Executor = executor;
             Activator = activator;
             Tracer = tracer;
+        }
+
+        /// <summary>
+        /// Use at your OWN RISK. NOTHING will be initialized for you!
+        /// </summary>
+        protected EdgeApplication()
+        {
         }
 
         public AppDelegate Start(AppDelegate next)
@@ -73,8 +80,8 @@ namespace Edge
                         RouteResult routed = await Router.Route(req);
                         if (!routed.Success)
                         {
-                            trace.WriteLine("Router: '{0}' ==> ??", req.Path);
-                            return await NotFound(req);
+                            // Also not for us!
+                            return await next(call);
                         }
                         trace.WriteLine("Router: '{0}' ==> '{1}'::'{2}'", req.Path, routed.File.Path, routed.PathInfo);
 

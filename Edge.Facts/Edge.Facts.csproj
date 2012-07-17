@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gate, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Gate.0.11\lib\net40\Gate.dll</HintPath>
+    </Reference>
     <Reference Include="Gate.Builder">
       <HintPath>..\packages\Gate.Builder.0.11\lib\net40\Gate.Builder.dll</HintPath>
     </Reference>
@@ -59,11 +63,14 @@
       <DependentUpon>CommonResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ContractAssert.cs" />
+    <Compile Include="DelegationTracker.cs" />
     <Compile Include="DisposableActionFacts.cs" />
     <Compile Include="EdgeApplicationFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requires.cs" />
     <Compile Include="TestAppBuilder.cs" />
+    <Compile Include="TestFile.cs" />
+    <Compile Include="TestFileSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

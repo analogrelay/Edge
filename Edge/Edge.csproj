@@ -95,6 +95,7 @@
     <Compile Include="IO\IFileSystem.cs" />
     <Compile Include="IO\PhysicalFile.cs" />
     <Compile Include="ITrace.cs" />
+    <Compile Include="NullTrace.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="PageBase.cs" />
     <Compile Include="PageCompileResults.cs" />

@@ -7,9 +7,12 @@ using Edge.Compilation;
 using Edge.Execution;
 using Edge.IO;
 using Edge.Routing;
+using Gate;
 using Moq;
+using Owin;
 using VibrantUtils;
 using Xunit;
+using Edge;
 
 namespace Edge.Facts
 {
@@ -106,6 +109,81 @@ namespace Edge.Facts
                     new Mock<IPageActivator>().Object,
                     new Mock<IPageExecutor>().Object,
                     null), "tracer");
+            }
+        }
+
+        public class TheStartMethod
+        {
+            [Fact]
+            public async Task DelegatesIfIncomingIsNotUnderVirtualRoot()
+            {
+                // Arrange
+                DelegationTracker delegation = new DelegationTracker();
+
+                var app = CreateEdgeApp("/Foo");
+                var appDel = app.Start(delegation.Next);
+
+                // Act
+                await appDel(CreateRequest(path: "/Bar"));
+
+                // Assert
+                Assert.True(delegation.NextWasCalled);
+            }
+
+            [Fact]
+            public async Task DelegatesIfIncomingIsNotMatchedByARoute()
+            {
+                // Arrange
+                DelegationTracker delegation = new DelegationTracker();
+
+                var app = CreateEdgeApp("/");
+                var appDel = app.Start(delegation.Next);
+
+                // Act
+                await appDel(CreateRequest(path: "/Bar"));
+
+                // Assert
+                Assert.True(delegation.NextWasCalled);
+            }
+        }
+
+        private static TestableEdgeApplication CreateEdgeApp(string virtualRoot = "/")
+        {
+            return new TestableEdgeApplication(virtualRoot);
+        }
+
+        private static CallParameters CreateRequest(
+            string method = "GET",
+            string path = "/",
+            string pathBase = "",
+            string queryString = "",
+            string scheme = "http",
+            string version = "1.0")
+        {
+            var cp = new CallParameters();
+            cp.Environment = new Dictionary<string, object>() {
+                {"owin.RequestMethod", method},
+                {"owin.RequestPath", path},
+                {"owin.RequestPathBase", pathBase},
+                {"owin.RequestQueryString", queryString},
+                {"owin.RequestScheme", scheme},
+                {"owin.Version", version}
+            };
+            return cp;
+        }
+
+        private class TestableEdgeApplication : EdgeApplication
+        {
+            public TestFileSystem TestFileSystem { get; private set; }
+            
+            public TestableEdgeApplication(string virtualRoot) : base() {
+                VirtualRoot = virtualRoot;
+                FileSystem = TestFileSystem = new TestFileSystem(@"C:\Test");
+                Router = new DefaultRouter(TestFileSystem);
+                Compiler = new DefaultCompilationManager();
+                Executor = new DefaultPageExecutor();
+                Activator = new DefaultPageActivator();
+                Tracer = NullTraceFactory.Instance;
             }
         }
     }
