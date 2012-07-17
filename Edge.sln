@@ -12,9 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{46C7E2
 		.nuget\nuget.exe = .nuget\nuget.exe
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Razelyn", "Razelyn\Razelyn.csproj", "{46FDB295-2468-42D4-9947-03A10B535732}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Razelyn.Facts", "Razelyn.Facts\Razelyn.Facts.csproj", "{7439319A-5DAF-49FF-B05F-4147093DC384}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge.Facts", "Edge.Facts\Edge.Facts.csproj", "{0918A988-93D4-474B-BC9D-6FB18DB23C0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,14 +20,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{46FDB295-2468-42D4-9947-03A10B535732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46FDB295-2468-42D4-9947-03A10B535732}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46FDB295-2468-42D4-9947-03A10B535732}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46FDB295-2468-42D4-9947-03A10B535732}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7439319A-5DAF-49FF-B05F-4147093DC384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7439319A-5DAF-49FF-B05F-4147093DC384}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7439319A-5DAF-49FF-B05F-4147093DC384}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7439319A-5DAF-49FF-B05F-4147093DC384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0918A988-93D4-474B-BC9D-6FB18DB23C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0918A988-93D4-474B-BC9D-6FB18DB23C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0918A988-93D4-474B-BC9D-6FB18DB23C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0918A988-93D4-474B-BC9D-6FB18DB23C0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D147DA9E-418A-4523-BECD-710E7CD62C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
