@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VibrantUtils;
 
 namespace Edge
 {
@@ -11,6 +12,8 @@ namespace Edge
 
         public DisposableAction(Action act)
         {
+            Requires.NotNull(act, "act");
+
             _act = act;
         }
 

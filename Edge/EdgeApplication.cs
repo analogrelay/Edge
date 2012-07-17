@@ -8,6 +8,7 @@ using Edge.IO;
 using Edge.Routing;
 using Gate;
 using Owin;
+using VibrantUtils;
 
 namespace Edge
 {
@@ -31,6 +32,14 @@ namespace Edge
             IPageExecutor executor, 
             ITraceFactory tracer)
         {
+            Requires.NotNull(fileSystem, "fileSystem");
+            Requires.NotNullOrEmpty(virtualRoot, "virtualRoot");
+            Requires.NotNull(router, "router");
+            Requires.NotNull(compiler, "compiler");
+            Requires.NotNull(activator, "activator");
+            Requires.NotNull(executor, "executor");
+            Requires.NotNull(tracer, "tracer");
+
             FileSystem = fileSystem;
             VirtualRoot = virtualRoot;
             Router = router;

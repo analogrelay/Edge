@@ -11,6 +11,7 @@ using Edge.IO;
 using Edge.Routing;
 using Edge.Compilation;
 using Edge.Execution;
+using VibrantUtils;
 
 namespace Edge
 {
@@ -18,26 +19,42 @@ namespace Edge
     {
         public static IAppBuilder UseEdge(this IAppBuilder builder)
         {
-            return UseEdge(builder, Environment.CurrentDirectory);
+            Requires.NotNull(builder, "builder");
+
+            return UseEdge(builder, new PhysicalFileSystem(Environment.CurrentDirectory), "/");
         }
 
-        public static IAppBuilder UseEdge(this IAppBuilder builder, string fileSystemRoot)
+        public static IAppBuilder UseEdge(this IAppBuilder builder, string rootDirectory)
         {
-            return UseEdge(builder, fileSystemRoot, null);
+            Requires.NotNull(builder, "builder");
+            Requires.NotNullOrEmpty(rootDirectory, "rootDirectory");
+
+            return UseEdge(builder, new PhysicalFileSystem(rootDirectory), "/");
         }
 
-        public static IAppBuilder UseEdge(this IAppBuilder builder, string fileSystemRoot, string virtualRoot)
+        public static IAppBuilder UseEdge(this IAppBuilder builder, string rootDirectory, string virtualRoot)
         {
-            return UseEdge(builder, new PhysicalFileSystem(fileSystemRoot), virtualRoot);
+            Requires.NotNull(builder, "builder");
+            Requires.NotNullOrEmpty(rootDirectory, "rootDirectory");
+            Requires.NotNullOrEmpty(virtualRoot, "virtualRoot");
+
+            return UseEdge(builder, new PhysicalFileSystem(rootDirectory), virtualRoot);
         }
 
         public static IAppBuilder UseEdge(this IAppBuilder builder, IFileSystem fileSystem)
         {
-            return UseEdge(builder, fileSystem, null);
+            Requires.NotNull(builder, "builder");
+            Requires.NotNull(fileSystem, "fileSystem");
+            
+            return UseEdge(builder, fileSystem, "/");
         }
 
         public static IAppBuilder UseEdge(this IAppBuilder builder, IFileSystem fileSystem, string virtualRoot)
         {
+            Requires.NotNull(builder, "builder");
+            Requires.NotNull(fileSystem, "fileSystem");
+            Requires.NotNullOrEmpty(virtualRoot, "virtualRoot");
+            
             return UseEdge(builder, new EdgeApplication(
                 fileSystem,
                 virtualRoot,
@@ -49,6 +66,9 @@ namespace Edge
         }
 
         public static IAppBuilder UseEdge(this IAppBuilder builder, EdgeApplication app) {
+            Requires.NotNull(builder, "builder");
+            Requires.NotNull(app, "app");
+            
             builder.Use(app.Start);
             return builder;
         }
