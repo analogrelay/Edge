@@ -11,11 +11,11 @@
           <SilverlightDebugging>False</SilverlightDebugging>
           <NativeDebugging>False</NativeDebugging>
           <SQLDebugging>False</SQLDebugging>
-          <ExternalProgram>D:\Code\Git\Edge\packages\Ghost.0.3.4\bin\Ghost.exe</ExternalProgram>
+          <ExternalProgram>C:\Users\Andrew\SkyDrive\Apps\Tools\Katana\bin\Katana.exe</ExternalProgram>
           <StartExternalURL>
           </StartExternalURL>
-          <StartCmdLineArguments>-s Firefly -u http://localhost:8800 -v</StartCmdLineArguments>
-          <StartWorkingDirectory>D:\Code\Git\Edge\EdgeDemo</StartWorkingDirectory>
+          <StartCmdLineArguments>-p8080</StartCmdLineArguments>
+          <StartWorkingDirectory>C:\Code\Git\Edge\EdgeDemo</StartWorkingDirectory>
           <EnableENC>False</EnableENC>
           <AlwaysStartWebServerOnDebug>True</AlwaysStartWebServerOnDebug>
         </WebProjectProperties>
