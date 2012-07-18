@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,6 +69,7 @@ namespace Edge
             global.WriteLine("Started at '{0}'=>'{1}'", VirtualRoot, FileSystem.Root);
             return async call =>
             {
+                Stopwatch sw = new Stopwatch();
                 Request req = new Request(call);
                 var trace = Tracer.ForRequest(req);
                 using (trace.StartTrace())
@@ -81,7 +83,7 @@ namespace Edge
                     }
 
                     // Step 1. Route the request to a file
-                    RouteResult routed = await Router.Route(req);
+                    RouteResult routed = await Router.Route(req, trace);
                     if (!routed.Success)
                     {
                         // Also not for us!
@@ -90,17 +92,27 @@ namespace Edge
                     trace.WriteLine("Router: '{0}' ==> '{1}'::'{2}'", req.Path, routed.File.Path, routed.PathInfo);
 
                     // Step 2. Use the compilation manager to get the file's compiled type
-                    CompilationResult compiled = await CompilationManager.Compile(routed.File);
+                    sw.Start();
+                    CompilationResult compiled = await CompilationManager.Compile(routed.File, trace);
+                    sw.Stop();
                     if (!compiled.Success)
                     {
                         trace.WriteLine("Compiler: '{0}' FAILED", routed.File.Name);
                         throw new CompilationFailedException(compiled.Messages);
                     }
-                    trace.WriteLine("Compiler: '{0}' SUCCESS", routed.File.Path);
+                    if (compiled.SatisfiedFromCache)
+                    {
+                        trace.WriteLine("Retrieved compiled code from cache in {0}ms", sw.ElapsedMilliseconds);
+                    }
+                    else
+                    {
+                        trace.WriteLine("Compiled '{0}' in {1}ms", routed.File.Path, sw.ElapsedMilliseconds);
+                    }
+                    sw.Reset();
 
                     // Step 3. Construct an instance using the PageActivator
                     Type type = compiled.GetCompiledType();
-                    ActivationResult activated = Activator.ActivatePage(type);
+                    ActivationResult activated = Activator.ActivatePage(type, trace);
                     if (!activated.Success)
                     {
                         trace.WriteLine("Activator: '{0}' FAILED", type.FullName);
@@ -109,7 +121,7 @@ namespace Edge
                     trace.WriteLine("Activator: '{0}' SUCCESS", type.FullName);
 
                     // Step 4. Execute the activated instance!
-                    Response resp = await Executor.Execute(activated.Page, req);
+                    Response resp = await Executor.Execute(activated.Page, req, trace);
                     return await resp.GetResultAsync();
                 }
             };

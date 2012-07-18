@@ -9,6 +9,6 @@ namespace Edge.Compilation
 {
     public interface ICompilationManager
     {
-        Task<CompilationResult> Compile(IFile file);
+        Task<CompilationResult> Compile(IFile file, ITrace tracer);
     }
 }

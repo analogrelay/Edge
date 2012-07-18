@@ -25,6 +25,11 @@ namespace Edge
         {
             return GateTrace.Global;
         }
+
+        internal void SetCurrentId(long id)
+        {
+            _nextId = id;
+        }
     }
 
     public class GateTrace : ITrace
@@ -61,11 +66,11 @@ namespace Edge
             string message = String.Format(format, args);
             if (Request != null)
             {
-                Request.TraceOutput.WriteLine("[EDGE #{0}]: {1}", RequestId, message);
+                Request.TraceOutput.WriteLine("[{2}][EDGE #{0}]: {1}", RequestId, message, DateTime.Now.ToString("HH:mm:ss.fff"));
             }
             else
             {
-                Trace.WriteLine(String.Format("[EDGE Global]: {0}", message));
+                Trace.WriteLine(String.Format("[{1}][EDGE Global]: {0}", message, DateTime.Now.ToString("HH:mm:ss.fff")));
             }
         }
     }

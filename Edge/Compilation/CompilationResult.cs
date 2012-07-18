@@ -11,6 +11,7 @@ namespace Edge.Compilation
         private Type _type;
 
         public bool Success { get; private set; }
+        public bool SatisfiedFromCache { get; private set; }
         public IList<CompilationMessage> Messages { get; private set; }
 
         public Type GetCompiledType()
@@ -22,21 +23,27 @@ namespace Edge.Compilation
             return _type;
         }
 
-        private CompilationResult(bool success, IList<CompilationMessage> messages, Type typ)
+        private CompilationResult(bool success, IList<CompilationMessage> messages, Type typ, bool fromCache)
         {
             Success = success;
             Messages = messages;
+            SatisfiedFromCache = fromCache;
             _type = typ;
         }
 
         public static CompilationResult Failed(IEnumerable<CompilationMessage> messages)
         {
-            return new CompilationResult(false, messages.ToList(), null);
+            return new CompilationResult(false, messages.ToList(), null, fromCache: false);
+        }
+
+        public static CompilationResult FromCache(Type typ)
+        {
+            return new CompilationResult(true, new List<CompilationMessage>(), typ, fromCache: true);
         }
 
         public static CompilationResult Successful(Type typ, IEnumerable<CompilationMessage> messages)
         {
-            return new CompilationResult(true, messages.ToList(), typ);
+            return new CompilationResult(true, messages.ToList(), typ, fromCache: false);
         }
     }
 }

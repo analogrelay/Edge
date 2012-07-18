@@ -21,7 +21,7 @@ namespace Edge.Routing
             FileSystem = fileSystem;
         }
 
-        public async Task<RouteResult> Route(Request req)
+        public async Task<RouteResult> Route(Request req, ITrace tracer)
         {
             // Start by just adding ".cshtml" to see if we can find a matching file
             string[] pathFragments = req.Path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);

@@ -9,6 +9,6 @@ namespace Edge.Execution
 {
     public interface IPageExecutor
     {
-        Task<Response> Execute(IEdgePage page, Request req);
+        Task<Response> Execute(IEdgePage page, Request req, ITrace tracer);
     }
 }

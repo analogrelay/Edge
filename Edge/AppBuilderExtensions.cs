@@ -59,7 +59,7 @@ namespace Edge
                 fileSystem,
                 virtualRoot,
                 new DefaultRouter(fileSystem),
-                new DefaultCompilationManager(),
+                new DefaultCompilationManager(new TimestampContentIdentifier()),
                 new DefaultPageActivator(),
                 new DefaultPageExecutor(),
                 new GateTraceFactory()));

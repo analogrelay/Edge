@@ -6,7 +6,7 @@ namespace Edge.Execution
 {
     public class DefaultPageExecutor : IPageExecutor
     {
-        public async Task<Response> Execute(IEdgePage page, Request req)
+        public async Task<Response> Execute(IEdgePage page, Request req, ITrace tracer)
         {
             Response resp = new Response(200);
             resp.Start();

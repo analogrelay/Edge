@@ -12,17 +12,25 @@ namespace Edge.IO
 
         public string Path { get; private set; }
         public string FullPath { get; private set; }
+
         public bool Exists
         {
             get { return _fileInfo.Exists; }
         }
+
         public string Extension
         {
             get { return _fileInfo.Extension; }
         }
+
         public string Name
         {
             get { return System.IO.Path.GetFileNameWithoutExtension(_fileInfo.Name); }
+        }
+
+        public DateTime LastModifiedTime
+        {
+            get { return _fileInfo.LastWriteTime.ToUniversalTime(); }
         }
 
         public PhysicalFile(string root, string relativePath)

@@ -7,6 +7,6 @@ namespace Edge.Execution
 {
     public interface IPageActivator
     {
-        ActivationResult ActivatePage(Type type);
+        ActivationResult ActivatePage(Type type, ITrace tracer);
     }
 }

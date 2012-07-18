@@ -7,7 +7,7 @@ namespace Edge.Execution
 {
     public class DefaultPageActivator : IPageActivator
     {
-        public ActivationResult ActivatePage(Type type)
+        public ActivationResult ActivatePage(Type type, ITrace tracer)
         {
             IEdgePage page = Activator.CreateInstance(type) as IEdgePage;
             if (page == null)

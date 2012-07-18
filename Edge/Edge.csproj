@@ -82,8 +82,10 @@
     <Compile Include="Compilation\FileLocation.cs" />
     <Compile Include="Compilation\ICompilationManager.cs" />
     <Compile Include="Compilation\ICompiler.cs" />
+    <Compile Include="Compilation\IContentIdentifier.cs" />
     <Compile Include="Compilation\MessageLevel.cs" />
     <Compile Include="Compilation\RazorCompiler.cs" />
+    <Compile Include="Compilation\TimestampContentIdentifier.cs" />
     <Compile Include="DisposableAction.cs" />
     <Compile Include="EdgeApplication.cs" />
     <Compile Include="Execution\ActivationResult.cs" />
@@ -98,9 +100,7 @@
     <Compile Include="IO\PhysicalFile.cs" />
     <Compile Include="ITrace.cs" />
     <Compile Include="NullTrace.cs" />
-    <Compile Include="Page.cs" />
     <Compile Include="PageBase.cs" />
-    <Compile Include="PageCompileResults.cs" />
     <Compile Include="IO\PhysicalFileSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requires.cs" />

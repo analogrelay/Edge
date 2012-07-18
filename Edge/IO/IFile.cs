@@ -13,7 +13,7 @@ namespace Edge.IO
         string FullPath { get; }
         string Extension { get; }
         bool Exists { get; }
-
         TextReader OpenRead();
+        DateTime LastModifiedTime { get; }
     }
 }

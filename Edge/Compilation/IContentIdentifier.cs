@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Gate;
+using Edge.IO;
 
-namespace Edge.Routing
+namespace Edge.Compilation
 {
-    public interface IRouter
+    public interface IContentIdentifier
     {
-        Task<RouteResult> Route(Request req, ITrace tracer);
+        string GenerateContentId(IFile file);
     }
 }

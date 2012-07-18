@@ -204,7 +204,7 @@ namespace Edge.Facts
                         fs,
                         "/",
                         new DefaultRouter(fs),
-                        new DefaultCompilationManager(),
+                        new DefaultCompilationManager(new TimestampContentIdentifier()),
                         new DefaultPageActivator(),
                         new DefaultPageExecutor(),
                         new GateTraceFactory());

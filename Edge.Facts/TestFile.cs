@@ -15,6 +15,7 @@ namespace Edge.Facts
         public string Extension { get; private set; }
         public bool Exists { get; private set; }
         public string TextContent { get; private set; }
+        public DateTime LastModifiedTime { get; private set; }
         
         public TestFile(string fullPath, string path)
         {
@@ -24,6 +25,7 @@ namespace Edge.Facts
             Name = System.IO.Path.GetFileNameWithoutExtension(path);
             Extension = System.IO.Path.GetExtension(path);
             TextContent = String.Empty;
+            LastModifiedTime = DateTime.UtcNow;
         }
 
         public TestFile(string fullPath, string path, string textContent) : this(fullPath, path)
