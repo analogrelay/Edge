@@ -17,7 +17,7 @@ namespace Edge
         public IFileSystem FileSystem { get; protected set; }
         public string VirtualRoot { get; protected set; }
         public IRouter Router { get; protected set; }
-        public ICompilationManager Compiler { get; protected set; }
+        public ICompilationManager CompilationManager { get; protected set; }
         public IPageExecutor Executor { get; protected set; }
         public IPageActivator Activator { get; protected set; }
         public ITraceFactory Tracer { get; protected set; }
@@ -43,7 +43,7 @@ namespace Edge
             FileSystem = fileSystem;
             VirtualRoot = virtualRoot;
             Router = router;
-            Compiler = compiler;
+            CompilationManager = compiler;
             Executor = executor;
             Activator = activator;
             Tracer = tracer;
@@ -54,6 +54,11 @@ namespace Edge
         /// </summary>
         protected EdgeApplication()
         {
+        }
+
+        public AppDelegate Start()
+        {
+            return Start(new AppDelegate(_ => Task.FromResult(new ResultParameters())));
         }
 
         public AppDelegate Start(AppDelegate next)
@@ -86,11 +91,10 @@ namespace Edge
                         trace.WriteLine("Router: '{0}' ==> '{1}'::'{2}'", req.Path, routed.File.Path, routed.PathInfo);
 
                         // Step 2. Use the compilation manager to get the file's compiled type
-                        CompilationResult compiled = await Compiler.Compile(routed.File);
+                        CompilationResult compiled = await CompilationManager.Compile(routed.File);
                         if (!compiled.Success)
                         {
-                            trace.WriteLine("Compiler: '{0}' FAILED", routed.File.Path);
-                            return await CompilationFailure(compiled);
+                            throw new CompilationFailedException(compiled.Messages);
                         }
                         trace.WriteLine("Compiler: '{0}' SUCCESS", routed.File.Path);
 

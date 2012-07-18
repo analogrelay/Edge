@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Edge.Compilation
 {
+    [Serializable]
     public class FileLocation
     {
         public string FileName { get; private set; }

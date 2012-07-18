@@ -9,6 +9,8 @@ namespace Edge.Facts
 {
     class TestFileSystem : IFileSystem
     {
+        private Dictionary<string, IFile> _testFiles = new Dictionary<string, IFile>();
+
         public string Root { get; private set; }
 
         public TestFileSystem(string root)
@@ -18,7 +20,19 @@ namespace Edge.Facts
 
         public IFile GetFile(string path)
         {
-            return new TestFile(Path.Combine(Root, path), path, exists: false);
+            IFile file;
+            if (!_testFiles.TryGetValue(path, out file))
+            {
+                return new TestFile(Path.Combine(Root, path), path);
+            }
+            return file;
+        }
+
+        public IFile AddTestFile(string path, string content)
+        {
+            var file = new TestFile(Path.Combine(Root, path), path, content);
+            _testFiles.Add(path, file);
+            return file;
         }
     }
 }

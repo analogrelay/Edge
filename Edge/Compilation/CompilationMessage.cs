@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Edge.Compilation
 {
+    [Serializable]
     public class CompilationMessage
     {
         public MessageLevel Level { get; private set; }

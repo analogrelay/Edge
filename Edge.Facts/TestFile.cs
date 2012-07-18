@@ -16,19 +16,20 @@ namespace Edge.Facts
         public bool Exists { get; private set; }
         public string TextContent { get; private set; }
         
-        public TestFile(string fullPath, string path, bool exists)
+        public TestFile(string fullPath, string path)
         {
             FullPath = fullPath;
             Path = path;
-            Exists = exists;
+            Exists = false;
             Name = System.IO.Path.GetFileNameWithoutExtension(path);
             Extension = System.IO.Path.GetExtension(path);
             TextContent = String.Empty;
         }
 
-        public TestFile(string fullPath, string path, bool exists, string textContent) : this(fullPath, path, exists)
+        public TestFile(string fullPath, string path, string textContent) : this(fullPath, path)
         {
             TextContent = textContent;
+            Exists = true;
         }
 
         public TextReader OpenRead()

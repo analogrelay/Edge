@@ -136,7 +136,7 @@ namespace Edge.Facts
                 // Arrange
                 DelegationTracker delegation = new DelegationTracker();
 
-                var app = CreateEdgeApp("/");
+                var app = CreateEdgeApp();
                 var appDel = app.Start(delegation.Next);
 
                 // Act
@@ -144,6 +144,37 @@ namespace Edge.Facts
 
                 // Assert
                 Assert.True(delegation.NextWasCalled);
+            }
+
+            [Fact]
+            public async Task ThrowsCompilationExceptionIfCompilationFails()
+            {
+                // Arrange
+                var app = CreateEdgeApp();
+                var appDel = app.Start();
+
+                var testFile = app.TestFileSystem.AddTestFile("Bar.cshtml", "Flarg");
+
+                var expected = new List<CompilationMessage>() {
+                    new CompilationMessage(MessageLevel.Error, "Yar!"),
+                    new CompilationMessage(MessageLevel.Warning, "Gar!", new FileLocation("Blar.cshtml")),
+                    new CompilationMessage(MessageLevel.Info, "Far!", new FileLocation("War.cshtml", 10, 12))
+                };
+
+                app.MockCompilationManager
+                   .Setup(c => c.Compile(testFile))
+                   .Returns(Task.FromResult(CompilationResult.Failed(expected)));
+
+                // Act
+                var ex = Assert.Throws<CompilationFailedException>(async () => await appDel(CreateRequest(path: "/Bar")));
+
+                // Assert
+                Assert.Equal(
+                    String.Format(Strings.CompilationFailedException_MessageWithErrorCounts, 1, 1),
+                    ex.Message);
+                Assert.Equal(
+                    expected,
+                    ex.Messages);
             }
         }
 
@@ -175,12 +206,13 @@ namespace Edge.Facts
         private class TestableEdgeApplication : EdgeApplication
         {
             public TestFileSystem TestFileSystem { get; private set; }
+            public Mock<ICompilationManager> MockCompilationManager { get; private set; }
             
             public TestableEdgeApplication(string virtualRoot) : base() {
                 VirtualRoot = virtualRoot;
                 FileSystem = TestFileSystem = new TestFileSystem(@"C:\Test");
                 Router = new DefaultRouter(TestFileSystem);
-                Compiler = new DefaultCompilationManager();
+                CompilationManager = (MockCompilationManager = new Mock<ICompilationManager>()).Object;
                 Executor = new DefaultPageExecutor();
                 Activator = new DefaultPageActivator();
                 Tracer = NullTraceFactory.Instance;
