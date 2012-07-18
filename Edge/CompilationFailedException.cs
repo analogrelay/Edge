@@ -21,7 +21,7 @@ namespace Edge
         public CompilationFailedException(IEnumerable<CompilationMessage> messages)
             : base(FormatMessage(messages))
         {
-            Messages = new List<CompilationMessage>();
+            Messages = messages.ToList();
         }
 
         public CompilationFailedException(string message) : base(message) {

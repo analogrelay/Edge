@@ -61,6 +61,15 @@ namespace Edge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activation of &apos;{0}&apos; failed..
+        /// </summary>
+        internal static string ActivationFailedException_DefaultMessage {
+            get {
+                return ResourceManager.GetString("ActivationFailedException_DefaultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compilation failed..
         /// </summary>
         internal static string CompilationFailedException_DefaultMessage {

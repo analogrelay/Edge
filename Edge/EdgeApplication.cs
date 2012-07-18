@@ -24,13 +24,14 @@ namespace Edge
 
         // Consumers should use IoC or the Default UseEdge extension method to initialize this.
         public EdgeApplication(
-            IFileSystem fileSystem, 
-            string virtualRoot, 
-            IRouter router, 
-            ICompilationManager compiler, 
-            IPageActivator activator, 
-            IPageExecutor executor, 
-            ITraceFactory tracer) : this()
+            IFileSystem fileSystem,
+            string virtualRoot,
+            IRouter router,
+            ICompilationManager compiler,
+            IPageActivator activator,
+            IPageExecutor executor,
+            ITraceFactory tracer)
+            : this()
         {
             Requires.NotNull(fileSystem, "fileSystem");
             Requires.NotNullOrEmpty(virtualRoot, "virtualRoot");
@@ -71,91 +72,54 @@ namespace Edge
                 var trace = Tracer.ForRequest(req);
                 using (trace.StartTrace())
                 {
-                    try
+                    trace.WriteLine("Recieved {0} {1}", req.Method, req.Path);
+
+                    if (!IsUnder(VirtualRoot, req.Path))
                     {
-                        trace.WriteLine("Recieved {0} {1}", req.Method, req.Path);
-
-                        if (!IsUnder(VirtualRoot, req.Path))
-                        {
-                            // Not for us!
-                            return await next(call);
-                        }
-
-                        // Step 1. Route the request to a file
-                        RouteResult routed = await Router.Route(req);
-                        if (!routed.Success)
-                        {
-                            // Also not for us!
-                            return await next(call);
-                        }
-                        trace.WriteLine("Router: '{0}' ==> '{1}'::'{2}'", req.Path, routed.File.Path, routed.PathInfo);
-
-                        // Step 2. Use the compilation manager to get the file's compiled type
-                        CompilationResult compiled = await CompilationManager.Compile(routed.File);
-                        if (!compiled.Success)
-                        {
-                            throw new CompilationFailedException(compiled.Messages);
-                        }
-                        trace.WriteLine("Compiler: '{0}' SUCCESS", routed.File.Path);
-
-                        // Step 3. Construct an instance using the PageActivator
-                        Type type = compiled.GetCompiledType();
-                        ActivationResult activated = Activator.ActivatePage(type);
-                        if (!activated.Success)
-                        {
-                            trace.WriteLine("Activator: '{0}' FAILED", activated.ActivatedType.FullName);
-                            return await ActivationFailure(activated);
-                        }
-                        trace.WriteLine("Activator: '{0}' SUCCESS", type.FullName);
-
-                        // Step 4. Execute the activated instance!
-                        Response resp = await Executor.Execute(activated.Page, req);
-                        return await resp.GetResultAsync();
+                        // Not for us!
+                        return await next(call);
                     }
-                    catch (Exception ex)
+
+                    // Step 1. Route the request to a file
+                    RouteResult routed = await Router.Route(req);
+                    if (!routed.Success)
                     {
-                        trace.WriteLine("{0}: {1}", ex.GetType().Name, ex.Message);
-                        throw;
+                        // Also not for us!
+                        return await next(call);
                     }
+                    trace.WriteLine("Router: '{0}' ==> '{1}'::'{2}'", req.Path, routed.File.Path, routed.PathInfo);
+
+                    // Step 2. Use the compilation manager to get the file's compiled type
+                    CompilationResult compiled = await CompilationManager.Compile(routed.File);
+                    if (!compiled.Success)
+                    {
+                        trace.WriteLine("Compiler: '{0}' FAILED", routed.File.Name);
+                        throw new CompilationFailedException(compiled.Messages);
+                    }
+                    trace.WriteLine("Compiler: '{0}' SUCCESS", routed.File.Path);
+
+                    // Step 3. Construct an instance using the PageActivator
+                    Type type = compiled.GetCompiledType();
+                    ActivationResult activated = Activator.ActivatePage(type);
+                    if (!activated.Success)
+                    {
+                        trace.WriteLine("Activator: '{0}' FAILED", type.FullName);
+                        throw new ActivationFailedException(type);
+                    }
+                    trace.WriteLine("Activator: '{0}' SUCCESS", type.FullName);
+
+                    // Step 4. Execute the activated instance!
+                    Response resp = await Executor.Execute(activated.Page, req);
+                    return await resp.GetResultAsync();
                 }
             };
         }
 
-        private async Task<ResultParameters> ActivationFailure(ActivationResult activated)
-        {
-            Response resp = new Response(500);
-            resp.Start();
-            resp.Write("Activation Failed for '{0}'", activated.ActivatedType.FullName);
-            resp.End();
-            return await resp.GetResultAsync();
-        }
-
-        private async Task<ResultParameters> CompilationFailure(CompilationResult compiled)
-        {
-            Response resp = new Response(500);
-            resp.Start();
-            resp.Write("Compilation Failed" + Environment.NewLine);
-            foreach (CompilationMessage message in compiled.Messages)
-            {
-                resp.Write(message.ToString() + Environment.NewLine);
-            }
-            resp.End();
-            return await resp.GetResultAsync();
-        }
-
-        private async Task<ResultParameters> NotFound(Request req)
-        {
-            Response resp = new Response(404);
-            resp.Start();
-            resp.Write("Not found: " + req.Path);
-            resp.End();
-            return await resp.GetResultAsync();
-        }
-
         internal static bool IsUnder(string root, string path)
         {
-            if (String.IsNullOrEmpty(root)) { 
-                return true; 
+            if (String.IsNullOrEmpty(root))
+            {
+                return true;
             }
             root = root.TrimEnd('/');
             path = path.TrimEnd('/');

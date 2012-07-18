@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppBuilderExtensionsFacts.cs" />
+    <Compile Include="AssertEx.cs" />
     <Compile Include="CommonResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

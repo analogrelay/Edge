@@ -166,7 +166,7 @@ namespace Edge.Facts
                    .Returns(Task.FromResult(CompilationResult.Failed(expected)));
 
                 // Act
-                var ex = Assert.Throws<CompilationFailedException>(async () => await appDel(CreateRequest(path: "/Bar")));
+                var ex = await AssertEx.Throws<CompilationFailedException>(async () => await appDel(CreateRequest(path: "/Bar")));
 
                 // Assert
                 Assert.Equal(
@@ -175,6 +175,70 @@ namespace Edge.Facts
                 Assert.Equal(
                     expected,
                     ex.Messages);
+            }
+
+            [Fact]
+            public async Task ThrowsActivationExceptionIfActivationFails()
+            {
+                // Arrange
+                var app = CreateEdgeApp();
+                var appDel = app.Start();
+
+                var testFile = app.TestFileSystem.AddTestFile("Bar.cshtml", "Flarg");
+
+                Type compiled = typeof(EdgeApplicationFacts);
+                app.MockCompilationManager
+                   .Setup(c => c.Compile(testFile))
+                   .Returns(Task.FromResult(CompilationResult.Successful(compiled, Enumerable.Empty<CompilationMessage>())));
+                app.MockActivator
+                   .Setup(a => a.ActivatePage(compiled))
+                   .Returns(ActivationResult.Failed());
+
+                // Act
+                var ex = await AssertEx.Throws<ActivationFailedException>(async () => await appDel(CreateRequest(path: "/Bar")));
+
+                // Assert
+                Assert.Equal(
+                    String.Format(Strings.ActivationFailedException_DefaultMessage, compiled.AssemblyQualifiedName),
+                    ex.Message);
+                Assert.Equal(
+                    compiled,
+                    ex.AttemptedToActivate);
+            }
+
+            [Fact]
+            public async Task ReturnsResultOfCallingExecutorIfAllPhasesSucceed()
+            {
+                // Arrange
+                var app = CreateEdgeApp();
+                var appDel = app.Start();
+
+                var testFile = app.TestFileSystem.AddTestFile("Bar.cshtml", "Flarg");
+
+                Type compiled = typeof(EdgeApplicationFacts);
+                Mock<IEdgePage> page = new Mock<IEdgePage>();
+                Response resp = new Response(418)
+                {
+                    ReasonPhrase = "I'm a teapot"
+                };
+                resp.Start();
+
+                app.MockCompilationManager
+                   .Setup(c => c.Compile(testFile))
+                   .Returns(Task.FromResult(CompilationResult.Successful(compiled, Enumerable.Empty<CompilationMessage>())));
+                app.MockActivator
+                   .Setup(a => a.ActivatePage(compiled))
+                   .Returns(ActivationResult.Successful(page.Object));
+                app.MockExecutor
+                   .Setup(e => e.Execute(page.Object, It.IsAny<Request>()))
+                   .Returns(Task.FromResult(resp));
+
+                // Act
+                var result = await appDel(CreateRequest(path: "/Bar"));
+
+                // Assert
+                Assert.Equal(418, result.Status);
+                Assert.Equal("I'm a teapot", result.Properties["owin.ReasonPhrase"]);
             }
         }
 
@@ -207,14 +271,16 @@ namespace Edge.Facts
         {
             public TestFileSystem TestFileSystem { get; private set; }
             public Mock<ICompilationManager> MockCompilationManager { get; private set; }
+            public Mock<IPageActivator> MockActivator { get; private set; }
+            public Mock<IPageExecutor> MockExecutor { get; private set; }
             
             public TestableEdgeApplication(string virtualRoot) : base() {
                 VirtualRoot = virtualRoot;
                 FileSystem = TestFileSystem = new TestFileSystem(@"C:\Test");
                 Router = new DefaultRouter(TestFileSystem);
                 CompilationManager = (MockCompilationManager = new Mock<ICompilationManager>()).Object;
-                Executor = new DefaultPageExecutor();
-                Activator = new DefaultPageActivator();
+                Activator = (MockActivator = new Mock<IPageActivator>()).Object;
+                Executor = (MockExecutor = new Mock<IPageExecutor>()).Object;
                 Tracer = NullTraceFactory.Instance;
             }
         }

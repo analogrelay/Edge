@@ -9,23 +9,21 @@ namespace Edge.Execution
     {
         public bool Success { get; private set; }
         public IEdgePage Page { get; private set; }
-        public Type ActivatedType { get; private set; }
 
-        private ActivationResult(bool success, IEdgePage page, Type activatedType)
+        private ActivationResult(bool success, IEdgePage page)
         {
             Success = success;
             Page = page;
-            ActivatedType = activatedType;
         }
 
-        public static ActivationResult Failed(Type activatedType)
+        public static ActivationResult Failed()
         {
-            return new ActivationResult(false, null, activatedType);
+            return new ActivationResult(false, null);
         }
 
-        public static ActivationResult Successful(IEdgePage page, Type activatedType)
+        public static ActivationResult Successful(IEdgePage page)
         {
-            return new ActivationResult(true, page, activatedType);
+            return new ActivationResult(true, page);
         }
     }
 }

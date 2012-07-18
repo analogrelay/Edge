@@ -12,11 +12,11 @@ namespace Edge.Execution
             IEdgePage page = Activator.CreateInstance(type) as IEdgePage;
             if (page == null)
             {
-                return ActivationResult.Failed(type);
+                return ActivationResult.Failed();
             }
             else
             {
-                return ActivationResult.Successful(page, page.GetType());
+                return ActivationResult.Successful(page);
             }
         }
     }
