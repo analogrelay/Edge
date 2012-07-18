@@ -126,4 +126,30 @@
   <data name="CompilationFailedException_MessageWithErrorCounts" xml:space="preserve">
     <value>Compilation failed due to {0} errors and {1} warnings.</value>
   </data>
+  <data name="ErrorPage_LinkComponent" xml:space="preserve">
+    <value>&lt;link rel="stylesheet" type="text/css" href="{0}" /&gt;</value>
+  </data>
+  <data name="ErrorPage_ListComponent" xml:space="preserve">
+    <value>&lt;ul class="error-list"&gt;
+    {0}
+&lt;/ul&gt;</value>
+  </data>
+  <data name="ErrorPage_ListItemComponent" xml:space="preserve">
+    <value>&lt;li&gt;{0}&lt;/li&gt;</value>
+  </data>
+  <data name="ErrorPage_Template" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;An error has occurred&lt;/title&gt;
+    {0}
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="icon"&gt;:(&lt;/div&gt;
+    &lt;div class="generic"&gt;An error has occurred.&lt;/div&gt;
+    &lt;div class="message"&gt;{1}: {2}&lt;/div&gt;
+    {3}
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
 </root>

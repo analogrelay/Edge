@@ -86,5 +86,55 @@ namespace Edge {
                 return ResourceManager.GetString("CompilationFailedException_MessageWithErrorCounts", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;{0}&quot; /&gt;.
+        /// </summary>
+        internal static string ErrorPage_LinkComponent {
+            get {
+                return ResourceManager.GetString("ErrorPage_LinkComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;ul class=&quot;error-list&quot;&gt;
+        ///    {0}
+        ///&lt;/ul&gt;.
+        /// </summary>
+        internal static string ErrorPage_ListComponent {
+            get {
+                return ResourceManager.GetString("ErrorPage_ListComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;li&gt;{0}&lt;/li&gt;.
+        /// </summary>
+        internal static string ErrorPage_ListItemComponent {
+            get {
+                return ResourceManager.GetString("ErrorPage_ListItemComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;title&gt;An error has occurred&lt;/title&gt;
+        ///    {0}
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;icon&quot;&gt;:(&lt;/div&gt;
+        ///    &lt;div class=&quot;generic&quot;&gt;An error has occurred.&lt;/div&gt;
+        ///    &lt;div class=&quot;message&quot;&gt;{1}: {2}&lt;/div&gt;
+        ///    {3}
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;.
+        /// </summary>
+        internal static string ErrorPage_Template {
+            get {
+                return ResourceManager.GetString("ErrorPage_Template", resourceCulture);
+            }
+        }
     }
 }

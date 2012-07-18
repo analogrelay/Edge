@@ -72,6 +72,11 @@ namespace Edge
             builder.Use(app.Start);
             return builder;
         }
+
+        public static void UseErrorPage(this IAppBuilder builder)
+        {
+            builder.Use(new ErrorPageMiddleware().Start);
+        }
     }
 }
 
