@@ -65,6 +65,8 @@
     </Compile>
     <Compile Include="ContractAssert.cs" />
     <Compile Include="DefaultCompilationManagerFacts.cs" />
+    <Compile Include="DefaultPageActivatorFacts.cs" />
+    <Compile Include="DefaultPageExecutorFacts.cs" />
     <Compile Include="DefaultRouterFacts.cs" />
     <Compile Include="DelegationTracker.cs" />
     <Compile Include="DisposableActionFacts.cs" />
