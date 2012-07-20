@@ -76,6 +76,8 @@ namespace Edge.Facts
             [InlineData("/Foo/Bar", @"Foo\default.cshtml", "Bar")]
             [InlineData("/Foo/Bar/Baz", @"Foo\Bar\index.cshtml", "Baz")]
             [InlineData("/Foo/Bar", @"Foo\index.cshtml", "Bar")]
+            [InlineData("/", @"Index.cshtml", "")]
+            [InlineData("/Bar", @"Index.cshtml", "Bar")]
             public async Task SuccessfulRouteTests(string vpath, string path, string pathInfo)
             {
                 // Arrange

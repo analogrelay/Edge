@@ -15,7 +15,7 @@ namespace Edge.Routing
         private HashSet<string> _knownExtensions = new HashSet<string>(new string[] {
             ".cshtml"
         }, StringComparer.OrdinalIgnoreCase);
-        
+
         private HashSet<string> _defaultDocumentNames = new HashSet<string>(new string[] {
             "Default",
             "Index"
@@ -50,33 +50,51 @@ namespace Edge.Routing
             Requires.NotNull(tracer, "tracer");
 
             // This is so slooooow!
+            IFile file;
             string[] pathFragments = request.Path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             for (int end = pathFragments.Length - 1; end >= 0; end--)
             {
                 Tuple<string, string> candidate = CreateCandidate(pathFragments, end);
-                foreach (string extension in KnownExtensions)
+                file = ResolveCandidate(candidate.Item1.Replace('/', Path.DirectorySeparatorChar));
+                if (file != null)
                 {
-                    string physicalPath = candidate.Item1.Replace('/', Path.DirectorySeparatorChar);
-                    IFile file = FileSystem.GetFile(physicalPath + extension);
-                    if (file.Exists)
+                    return Task.FromResult(RouteResult.Successful(file, candidate.Item2));
+                }
+            }
+            file = ResolveCandidate(String.Empty);
+            if (file != null)
+            {
+                return Task.FromResult(RouteResult.Successful(file, request.Path.TrimStart('/')));
+            }
+            else
+            {
+                return Task.FromResult(RouteResult.Failed());
+            }
+        }
+
+        private IFile ResolveCandidate(string physicalPath)
+        {
+            foreach (string extension in KnownExtensions)
+            {
+                IFile file = FileSystem.GetFile(physicalPath + extension);
+                if (file.Exists)
+                {
+                    return file;
+                }
+                else
+                {
+                    // Try "[name]/Default.cshtml"
+                    foreach (string docNames in DefaultDocumentNames)
                     {
-                        return Task.FromResult(RouteResult.Successful(file, candidate.Item2));
-                    }
-                    else
-                    {
-                        // Try "[name]/Default.cshtml"
-                        foreach (string docNames in DefaultDocumentNames)
+                        file = FileSystem.GetFile(Path.Combine(physicalPath, docNames + extension));
+                        if (file.Exists)
                         {
-                            file = FileSystem.GetFile(Path.Combine(physicalPath, docNames + extension));
-                            if (file.Exists)
-                            {
-                                return Task.FromResult(RouteResult.Successful(file, candidate.Item2));
-                            }
+                            return file;
                         }
                     }
                 }
             }
-            return Task.FromResult(RouteResult.Failed());
+            return null;
         }
 
         private static Tuple<string, string> CreateCandidate(string[] pathFragments, int end)

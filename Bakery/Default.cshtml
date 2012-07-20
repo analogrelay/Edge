@@ -1,8 +1,23 @@
 ﻿@{
-    Page.Title = "Home";
+    //Page.Title = "Home";
 
-    var db = Database.Open("bakery");
-    var products = db.Query("SELECT * FROM PRODUCTS").ToList();
+    //var db = Database.Open("bakery");
+    var products = new List<dynamic> { //db.Query("SELECT * FROM PRODUCTS").ToList();
+        new {
+            Id = 42,
+            ImageName = "bread",
+            Name = "Bread",
+            Description = "Not real bread!",
+            Price = 42.00
+        },
+        new {
+            Id = 24,
+            ImageName = "carrot_cake",
+            Name = "Carrot Cake",
+            Description = "Healthy? Nice try!",
+            Price = 24.00
+        }
+    };
     var featured = products[new Random().Next(products.Count)];
 }
 

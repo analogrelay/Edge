@@ -134,7 +134,6 @@ namespace Edge
                 return true;
             }
             root = root.TrimEnd('/');
-            path = path.TrimEnd('/');
             return path.StartsWith(root + "/");
         }
     }

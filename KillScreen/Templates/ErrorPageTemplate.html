@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>An error has occurred</title>
+    <link rel="stylesheet" type="text/css" href="ErrorPage.css" />
+</head>
+<body>
+    <div id="container">
+        <h1 id="frowny">:(</h1>
+        <h2 id="title">An internal error has occurred</h2>
+        <h3 id="summary">'Foo.cshtml' could not be compiled</h3>
+        <h4 id="messages-title">Compilation Errors:</h4>
+        <ul id="messages-list">
+            <li class="message">
+                <h5 class="message-title">'foo' is not defined
+                </h5>
+                <div class="message-body">
+                    <pre class="message-code">42:     &lt;p&gt;@foo&lt;/p&gt;
+42:     &lt;p&gt;@foo&lt;/p&gt;
+42:     &lt;p&gt;@foo&lt;/p&gt;</pre>
+                </div>
+            </li>
+            <li class="message">
+                <h5 class="message-title">'foo' is not defined</h5>
+                <div class="message-body">
+                    <pre class="message-code">42:     &lt;p&gt;@foo&lt;/p&gt;</pre>
+                </div>
+            </li>
+        </ul>
+        <h4 id="exception-detail">Exception Details:</h4>
+        <h5>Edge.CompilationFailedException: Compilation Failed</h5>
+        <pre id="stack-trace">Stack!</pre>
+    </div>
+</body>
+</html>
