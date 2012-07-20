@@ -8,7 +8,7 @@ using Owin;
 
 namespace Edge.Facts
 {
-    public static class TestData
+    internal static class TestData
     {
         public static CallParameters CreateCallParams(
             string method = "GET",
@@ -40,6 +40,11 @@ namespace Edge.Facts
         {
             return new Request(CreateCallParams(
                 method, path, pathBase, queryString, scheme, version));
+        }
+
+        public static TestFile CreateDummyFile()
+        {
+            return new TestFile("Irrel", "evan", "t");
         }
     }
 }

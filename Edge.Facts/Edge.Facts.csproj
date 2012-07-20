@@ -64,10 +64,12 @@
       <DependentUpon>CommonResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ContractAssert.cs" />
+    <Compile Include="DefaultCompilationManagerFacts.cs" />
     <Compile Include="DefaultRouterFacts.cs" />
     <Compile Include="DelegationTracker.cs" />
     <Compile Include="DisposableActionFacts.cs" />
     <Compile Include="EdgeApplicationFacts.cs" />
+    <Compile Include="FakeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requires.cs" />
     <Compile Include="TestAppBuilder.cs" />

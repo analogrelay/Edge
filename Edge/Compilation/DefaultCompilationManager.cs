@@ -4,40 +4,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Edge.IO;
+using VibrantUtils;
 
 namespace Edge.Compilation
 {
     public class DefaultCompilationManager : ICompilationManager
     {
-        private Dictionary<string, WeakReference<Type>> _cache = new Dictionary<string, WeakReference<Type>>();
-
         private IList<ICompiler> _compilers = new List<ICompiler>() {
             new RazorCompiler()
         };
 
-        public IContentIdentifier ContentIdentifier { get; private set; }
-
-        public DefaultCompilationManager(IContentIdentifier identifier)
+        public IContentIdentifier ContentIdentifier { get; protected set; }
+        public IList<ICompiler> Compilers
         {
+            get { return _compilers; }
+        }
+
+        internal IDictionary<string, WeakReference<Type>> Cache { get; private set; }
+
+        protected DefaultCompilationManager() {
+            Cache = new Dictionary<string, WeakReference<Type>>();
+        }
+        
+        public DefaultCompilationManager(IContentIdentifier identifier) : this()
+        {
+            Requires.NotNull(identifier, "identifier");
+
             ContentIdentifier = identifier;
         }
 
-        public void RegisterCompiler(ICompiler compiler)
+        public Task<CompilationResult> Compile(IFile file, ITrace tracer)
         {
-            _compilers.Add(compiler);
-        }
+            Requires.NotNull(file, "file");
+            Requires.NotNull(tracer, "tracer");
 
-        public async Task<CompilationResult> Compile(IFile file, ITrace tracer)
-        {
             // Generate a content id
             string contentId = ContentIdentifier.GenerateContentId(file);
             tracer.WriteLine("CompilationManager - Content ID: {0}", contentId);
 
-            WeakReference<Type> cached;
-            Type compiled;
-            if (_cache.TryGetValue(contentId, out cached) && cached.TryGetTarget(out compiled))
+            WeakReference<Type> cacheEntry;
+            if (Cache.TryGetValue(contentId, out cacheEntry))
             {
-                return CompilationResult.FromCache(compiled);
+                Type cached;
+                if (cacheEntry.TryGetTarget(out cached))
+                {
+                    return Task.FromResult(CompilationResult.FromCache(cached));
+                }
+                else
+                {
+                    tracer.WriteLine("CompilationManager - Expired: {0}", contentId);
+                    Cache.Remove(contentId);
+                }
             }
 
             foreach (ICompiler compiler in _compilers)
@@ -45,17 +62,26 @@ namespace Edge.Compilation
                 if (compiler.CanCompile(file))
                 {
                     tracer.WriteLine("CompilationManager - Selected compiler: '{0}'", compiler.GetType().Name);
-                    CompilationResult result = await compiler.Compile(file);
-                    if (result.Success)
-                    {
-                        _cache[contentId] = new WeakReference<Type>(result.GetCompiledType());
-                    }
-                    return result;
+                    return CompileWith(compiler, contentId, file);
                 }
             }
-            return CompilationResult.Failed(new [] {
-                new CompilationMessage(MessageLevel.Error, "Cannot find a suitable compiler for this file", new FileLocation(file.FullPath))
-            });
+
+            return Task.FromResult(CompilationResult.Failed(new [] {
+                new CompilationMessage(
+                    MessageLevel.Error, 
+                    Strings.DefaultCompilationManager_CannotFindCompiler, 
+                    new FileLocation(file.FullPath))
+            }));
+        }
+
+        private async Task<CompilationResult> CompileWith(ICompiler compiler, string contentId, IFile file)
+        {
+            CompilationResult result = await compiler.Compile(file);
+            if (result.Success)
+            {
+                Cache[contentId] = new WeakReference<Type>(result.GetCompiledType());
+            }
+            return result;
         }
     }
 }
