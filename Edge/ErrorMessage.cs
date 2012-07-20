@@ -35,7 +35,8 @@ namespace Edge
             {
                 FileName = cm.Location.FileName,
                 LineNumber = cm.Location.LineNumber,
-                Column = cm.Location.Column
+                Column = cm.Location.Column,
+                InGeneratedSource = cm.Location.InGeneratedCode
             };
         }
     }

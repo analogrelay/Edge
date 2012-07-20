@@ -11,6 +11,7 @@ namespace Edge.Compilation
         public string FileName { get; private set; }
         public int? LineNumber { get; private set; }
         public int? Column { get; private set; }
+        public bool InGeneratedCode { get; private set; }
 
         public FileLocation(string fileName) {
             FileName = fileName;
@@ -24,10 +25,16 @@ namespace Edge.Compilation
             Column = column;
         }
 
+        public FileLocation(string fileName, int lineNumber, int column, bool inGeneratedCode)
+            : this(fileName, lineNumber, column)
+        {
+            InGeneratedCode = inGeneratedCode;
+        }
+
         public override string ToString()
         {
             return String.Concat(
-                FileName,
+                InGeneratedCode ? "[Generated Source Code]" : FileName,
                 LineNumber == null ? String.Empty :
                     String.Format(":{0},{1}", LineNumber.Value, Column.Value));
         }

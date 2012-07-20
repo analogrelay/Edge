@@ -13,5 +13,6 @@ namespace KillScreen
         public string ReasonPhrase { get; set; }
         public Exception Exception { get; set; }
         public IEnumerable<ErrorDetail> Errors { get; set; }
+        public string CompilationSource { get; set; }
     }
 }

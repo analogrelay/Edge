@@ -9,8 +9,9 @@ using KillScreen.Interop;
 namespace Edge
 {
     [Serializable]
-    public class CompilationFailedException : Exception, IMultiMessageException
+    public class CompilationFailedException : Exception, IMultiMessageException, IProvidesCompilationSource
     {
+        public string GeneratedCode { get; private set; }
         public IList<CompilationMessage> Messages { get; private set; }
 
         public CompilationFailedException()
@@ -19,10 +20,11 @@ namespace Edge
             Messages = new List<CompilationMessage>();
         }
 
-        public CompilationFailedException(IEnumerable<CompilationMessage> messages)
+        public CompilationFailedException(IEnumerable<CompilationMessage> messages, string generatedCode)
             : base(FormatMessage(messages))
         {
             Messages = messages.ToList();
+            GeneratedCode = generatedCode;
         }
 
         public CompilationFailedException(string message) : base(message) {
@@ -34,6 +36,7 @@ namespace Edge
         }
 
         public CompilationFailedException(SerializationInfo info, StreamingContext context) : base(info, context) {
+            GeneratedCode = info.GetString("GeneratedCode");
             CompilationMessage[] messages = new CompilationMessage[info.GetInt32("Messages.Count")];
             for (int i = 0; i < messages.Length; i++)
             {
@@ -54,6 +57,7 @@ namespace Edge
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue("GeneratedCode", GeneratedCode);
             info.AddValue("Messages.Count", Messages.Count);
             for (int i = 0; i < Messages.Count; i++)
             {
@@ -72,6 +76,11 @@ namespace Edge
         string IMultiMessageException.MessageListTitle
         {
             get { return "Compilation Errors"; }
+        }
+
+        string IProvidesCompilationSource.CompilationSource
+        {
+            get { return GeneratedCode; }
         }
     }
 }

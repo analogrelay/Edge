@@ -98,7 +98,7 @@ namespace Edge
                     if (!compiled.Success)
                     {
                         trace.WriteLine("Compiler: '{0}' FAILED", routed.File.Name);
-                        throw new CompilationFailedException(compiled.Messages);
+                        throw new CompilationFailedException(compiled.Messages, compiled.GeneratedCode);
                     }
                     if (compiled.SatisfiedFromCache)
                     {

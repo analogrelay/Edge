@@ -92,7 +92,6 @@
       <DependentUpon>jquery.validate.unobtrusive.js</DependentUpon>
     </Content>
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
-    <Content Include="Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.cshtml" />

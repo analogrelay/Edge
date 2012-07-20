@@ -11,6 +11,7 @@ namespace KillScreen
         public Uri UniqueId { get; private set; }
         public string Message { get; private set; }
         public FileLocation Location { get; private set; }
+        public bool InGeneratedSource { get; private set; }
 
         public ErrorDetail(string message)
         {
@@ -22,6 +23,13 @@ namespace KillScreen
         {
             Message = message;
             Location = location;
+        }
+
+        public ErrorDetail(string message, FileLocation location, bool inGeneratedSource)
+        {
+            Message = message;
+            Location = location;
+            InGeneratedSource = inGeneratedSource;
         }
     }
 }

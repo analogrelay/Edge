@@ -33,9 +33,17 @@ namespace KillScreen.Interop
         string Message { get; }
     }
 
+    [ComImport]
+    [Guid("11060B6A-0E69-41F9-A842-28DA86D82128")]
+    public interface IProvidesCompilationSource
+    {
+        string CompilationSource { get; }
+    }
+
     public struct FileLocation
     {
         public string FileName;
+        public bool InGeneratedSource;
         public int? LineNumber;
         public int? Column;
     }

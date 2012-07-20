@@ -13,6 +13,7 @@ namespace KillScreen
         {
             IHttpException http = ex as IHttpException;
             IMultiMessageException mm = ex as IMultiMessageException;
+            IProvidesCompilationSource compsrc = ex as IProvidesCompilationSource;
             return new ErrorSummary()
             {
                 StatusCode = http != null ? http.StatusCode : 500,
@@ -20,7 +21,8 @@ namespace KillScreen
                 Summary = ex.Message,
                 Exception = ex,
                 ErrorListTitle = mm != null ? mm.MessageListTitle : null,
-                Errors = mm != null ? mm.Messages.Select(ConvertMessage) : null
+                Errors = mm != null ? mm.Messages.Select(ConvertMessage) : null,
+                CompilationSource = compsrc != null ? compsrc.CompilationSource : null
             };
         }
 

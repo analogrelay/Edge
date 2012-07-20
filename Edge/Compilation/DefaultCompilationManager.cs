@@ -66,7 +66,7 @@ namespace Edge.Compilation
                 }
             }
 
-            return Task.FromResult(CompilationResult.Failed(new [] {
+            return Task.FromResult(CompilationResult.Failed(null, new [] {
                 new CompilationMessage(
                     MessageLevel.Error, 
                     Strings.DefaultCompilationManager_CannotFindCompiler, 

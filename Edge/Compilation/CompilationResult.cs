@@ -13,6 +13,7 @@ namespace Edge.Compilation
         public bool Success { get; private set; }
         public bool SatisfiedFromCache { get; private set; }
         public IList<CompilationMessage> Messages { get; private set; }
+        public string GeneratedCode { get; private set; }
 
         public Type GetCompiledType()
         {
@@ -23,27 +24,28 @@ namespace Edge.Compilation
             return _type;
         }
 
-        private CompilationResult(bool success, IList<CompilationMessage> messages, Type typ, bool fromCache)
+        private CompilationResult(bool success, string generatedCode, IList<CompilationMessage> messages, Type typ, bool fromCache)
         {
             Success = success;
+            GeneratedCode = generatedCode;
             Messages = messages;
             SatisfiedFromCache = fromCache;
             _type = typ;
         }
 
-        public static CompilationResult Failed(IEnumerable<CompilationMessage> messages)
+        public static CompilationResult Failed(string generatedCode, IEnumerable<CompilationMessage> messages)
         {
-            return new CompilationResult(false, messages.ToList(), null, fromCache: false);
+            return new CompilationResult(false, generatedCode, messages.ToList(), null, fromCache: false);
         }
 
         public static CompilationResult FromCache(Type typ)
         {
-            return new CompilationResult(true, new List<CompilationMessage>(), typ, fromCache: true);
+            return new CompilationResult(true, null, new List<CompilationMessage>(), typ, fromCache: true);
         }
 
-        public static CompilationResult Successful(Type typ, IEnumerable<CompilationMessage> messages)
+        public static CompilationResult Successful(string generatedCode, Type typ, IEnumerable<CompilationMessage> messages)
         {
-            return new CompilationResult(true, messages.ToList(), typ, fromCache: false);
+            return new CompilationResult(true, generatedCode, messages.ToList(), typ, fromCache: false);
         }
     }
 }

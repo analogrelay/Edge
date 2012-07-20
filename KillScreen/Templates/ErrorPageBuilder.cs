@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,8 @@ namespace KillScreen.Templates
 
         public void Write(TextWriter target)
         {
+            var sourceLines = (Summary.CompilationSource ?? String.Empty).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
             target.Write(@"<!DOCTYPE html>
 
 <html lang=""en"" xmlns=""http://www.w3.org/1999/xhtml"">
@@ -69,12 +72,13 @@ namespace KillScreen.Templates
             font-size: 1em;
         }
 
-        pre#stack-trace {
+        pre {
             margin: 10px;
             padding: 10px;
             background-color: white;
             color: black;
             border-top: solid #f09609 5px;
+            overflow-x: auto;
         }
 
         ul#messages-list {
@@ -108,11 +112,13 @@ namespace KillScreen.Templates
                 }
 
                 ul#messages-list li pre {
+                    border: none;
                     margin: 0;
                     padding: 5px;
                     font-weight: lighter;
                     font-size: 1em;
                     color: black;
+                    overflow-x: visible;
                 }
     </style>
 </head>
@@ -140,16 +146,16 @@ namespace KillScreen.Templates
                     if(!String.IsNullOrEmpty(error.Location.FileName)) {
                         target.Write(@"
                     <pre class=""message-code"">");
-                        WriteSourceCode(target, error);
+                        WriteSourceCode(target, error, sourceLines);
                         target.Write(@"
                     </pre>");
                     }
                     target.Write(@"
                 </div>");
-                    if(!String.IsNullOrEmpty(error.Location.FileName)) {
+                    if(error.Location.InGeneratedSource || !String.IsNullOrEmpty(error.Location.FileName)) {
                         target.Write(@"
                 <p class=""message-location"">");
-                        target.Write(error.Location.FileName);
+                        target.Write(error.Location.InGeneratedSource ? "[Generated Source Code]" : error.Location.FileName);
                         if (error.Location.LineNumber.HasValue)
                         {
                             target.Write(":");
@@ -179,26 +185,48 @@ namespace KillScreen.Templates
                 target.Write(@"</h5>
         <pre id=""stack-trace"">");
                 target.Write(Summary.Exception.StackTrace);
-                target.Write(@"</pre>
+                target.Write(@"</pre>");
+            }
+            if(!String.IsNullOrEmpty(Summary.CompilationSource)) {
+                target.Write(@"
+        <h4 id=""compilation-source-header"">Full Compilation Source:</h4>
+        <pre id=""compilation-source"">");
+                target.Write(WebUtility.HtmlEncode(Summary.CompilationSource));
+                target.Write(@"
+        </pre>");
+            }
+            target.Write(@"
     </div>
 </body>
 </html>");
-            }
         }
 
-        private void WriteSourceCode(TextWriter writer, ErrorDetail error)
+        private void WriteSourceCode(TextWriter writer, ErrorDetail error, string[] compilationLines)
         {
-            if (String.IsNullOrEmpty(error.Location.FileName) || !File.Exists(error.Location.FileName) || !error.Location.LineNumber.HasValue)
+            if (String.IsNullOrEmpty(error.Location.FileName) || !error.Location.LineNumber.HasValue)
             {
                 writer.Write("&lt;Source Not Available&gt;");
+                return;
+            }
+            
+            string[] lines;
+            if(error.Location.InGeneratedSource)
+            {
+                lines = compilationLines;
+            }
+            else if (File.Exists(error.Location.FileName))
+            {
+                // Super hacky!
+                lines = File.ReadAllLines(error.Location.FileName);
             }
             else
             {
-                // Super hacky!
-                string[] lines = File.ReadAllLines(error.Location.FileName);
-                string line = lines[error.Location.LineNumber.Value];
-                writer.Write(String.Format("{0}:{1}", error.Location.LineNumber.Value, line));
+                writer.Write("&lt;Source Not Available&gt;");
+                return;
             }
+
+            string line = lines[error.Location.LineNumber.Value];
+            writer.Write(String.Format("{0}:{1}", error.Location.LineNumber.Value, WebUtility.HtmlEncode(line)));
         }
     }
 }

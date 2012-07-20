@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivationFailedException.cs" />
+    <Compile Include="AttributeValue.cs" />
     <Compile Include="CommonResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -103,8 +104,10 @@
     <Compile Include="NullTrace.cs" />
     <Compile Include="PageBase.cs" />
     <Compile Include="IO\PhysicalFileSystem.cs" />
+    <Compile Include="PositionTagged.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requires.cs" />
+    <Compile Include="ResponseWriter.cs" />
     <Compile Include="Routing\DefaultRouter.cs" />
     <Compile Include="Routing\IRouter.cs" />
     <Compile Include="Routing\RouteResult.cs" />

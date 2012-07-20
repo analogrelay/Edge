@@ -163,7 +163,7 @@ namespace Edge.Facts
 
                 app.MockCompilationManager
                    .Setup(c => c.Compile(testFile, It.IsAny<ITrace>()))
-                   .Returns(Task.FromResult(CompilationResult.Failed(expected)));
+                   .Returns(Task.FromResult(CompilationResult.Failed(null, expected)));
 
                 // Act
                 var ex = await AssertEx.Throws<CompilationFailedException>(async () => await appDel(TestData.CreateCallParams(path: "/Bar")));
@@ -189,7 +189,7 @@ namespace Edge.Facts
                 Type compiled = typeof(EdgeApplicationFacts);
                 app.MockCompilationManager
                    .Setup(c => c.Compile(testFile, It.IsAny<ITrace>()))
-                   .Returns(Task.FromResult(CompilationResult.Successful(compiled, Enumerable.Empty<CompilationMessage>())));
+                   .Returns(Task.FromResult(CompilationResult.Successful(null, compiled, Enumerable.Empty<CompilationMessage>())));
                 app.MockActivator
                    .Setup(a => a.ActivatePage(compiled, It.IsAny<ITrace>()))
                    .Returns(ActivationResult.Failed());
@@ -225,7 +225,7 @@ namespace Edge.Facts
 
                 app.MockCompilationManager
                    .Setup(c => c.Compile(testFile, It.IsAny<ITrace>()))
-                   .Returns(Task.FromResult(CompilationResult.Successful(compiled, Enumerable.Empty<CompilationMessage>())));
+                   .Returns(Task.FromResult(CompilationResult.Successful(null, compiled, Enumerable.Empty<CompilationMessage>())));
                 app.MockActivator
                    .Setup(a => a.ActivatePage(compiled, It.IsAny<ITrace>()))
                    .Returns(ActivationResult.Successful(page.Object));

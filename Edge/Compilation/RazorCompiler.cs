@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Razor;
+using System.Web.Razor.Generator;
 using Edge.Execution;
 using Edge.IO;
 using Microsoft.CSharp;
@@ -38,8 +39,22 @@ namespace Edge.Compilation
             string className = MakeClassName(file.Name);
             RazorTemplateEngine engine = new RazorTemplateEngine(new RazorEngineHost(new CSharpRazorCodeLanguage())
             {
-                DefaultBaseClass = "Edge.PageBase"
+                DefaultBaseClass = "Edge.PageBase",
+                GeneratedClassContext = new GeneratedClassContext(
+                    executeMethodName: "Execute",
+                    writeMethodName: "Write",
+                    writeLiteralMethodName: "WriteLiteral",
+                    writeToMethodName: "WriteTo",
+                    writeLiteralToMethodName: "WriteLiteralTo",
+                    templateTypeName: "Template",
+                    defineSectionMethodName: "DefineSection")
+                    {
+                        ResolveUrlMethodName = "Href"
+                    }
             });
+            engine.Host.NamespaceImports.Add("System");
+            engine.Host.NamespaceImports.Add("System.Linq");
+            engine.Host.NamespaceImports.Add("System.Collections.Generic");
 
             GeneratorResults results;
             using (TextReader rdr = file.OpenRead())
@@ -84,6 +99,7 @@ namespace Edge.Compilation
                 syntaxTrees: new [] { tree }, 
                 references: new [] {
                     new AssemblyFileReference(typeof(object).Assembly.Location),
+                    new AssemblyFileReference(typeof(Enumerable).Assembly.Location),
                     new AssemblyFileReference(typeof(PageBase).Assembly.Location),
                     new AssemblyFileReference(typeof(Gate.Request).Assembly.Location)
                 });
@@ -109,15 +125,16 @@ namespace Edge.Compilation
                         new FileLocation(
                             span.Path,
                             linePosition.Line,
-                            linePosition.Character)));
+                            linePosition.Character,
+                            String.Equals(span.Path, "__Generated.cs", StringComparison.OrdinalIgnoreCase))));
                 }
             }
 
             // Create a compilation result
             if(success && result.Success) {
-                return CompilationResult.Successful(typ, messages);
+                return CompilationResult.Successful(code.ToString(), typ, messages);
             }
-            return CompilationResult.Failed(messages);
+            return CompilationResult.Failed(code.ToString(), messages);
         }
 
         private string MakeClassName(string fileName)

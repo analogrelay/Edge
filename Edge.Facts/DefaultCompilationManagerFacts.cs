@@ -82,7 +82,7 @@ namespace Edge.Facts
                 cm.MockContentIdentifier
                   .Setup(i => i.GenerateContentId(file)).Returns("Foo");
                 compiler.Setup(c => c.CanCompile(file)).Returns(true);
-                compiler.Setup(c => c.Compile(file)).Returns(Task.FromResult(CompilationResult.Successful(compiled.Object, new [] {
+                compiler.Setup(c => c.Compile(file)).Returns(Task.FromResult(CompilationResult.Successful(It.IsAny<string>(), compiled.Object, new [] {
                     new CompilationMessage(MessageLevel.Info, "Foo")
                 })));
 
@@ -112,7 +112,7 @@ namespace Edge.Facts
                 cm.MockContentIdentifier
                   .Setup(i => i.GenerateContentId(file)).Returns("Foo");
                 compiler.Setup(c => c.CanCompile(file)).Returns(true);
-                compiler.Setup(c => c.Compile(file)).Returns(Task.FromResult(CompilationResult.Successful(compiled.Object, new[] {
+                compiler.Setup(c => c.Compile(file)).Returns(Task.FromResult(CompilationResult.Successful(It.IsAny<string>(), compiled.Object, new[] {
                     new CompilationMessage(MessageLevel.Info, "Foo")
                 })));
 
@@ -164,7 +164,8 @@ namespace Edge.Facts
                 var file = TestData.CreateDummyFile();
                 var compiler = new Mock<ICompiler>(MockBehavior.Strict);
                 cm.MockContentIdentifier
-                  .Setup(i => i.GenerateContentId(file)).Returns("Foo");
+                  .Setup(i => i.GenerateContentId(file))
+                  .Returns("Foo");
                 compiler.Setup(c => c.CanCompile(file)).Returns(false);
                 cm.Compilers.Add(compiler.Object);
 
