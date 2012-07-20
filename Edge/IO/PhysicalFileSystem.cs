@@ -20,12 +20,5 @@ namespace Edge.IO
         {
             return new PhysicalFile(Root, path);
         }
-
-        public override bool Equals(object obj)
-        {
-            PhysicalFileSystem other = obj as PhysicalFileSystem;
-            return other != null &&
-                   String.Equals(Root, other.Root);
-        }
     }
 }

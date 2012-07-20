@@ -9,6 +9,6 @@ namespace Edge.Routing
 {
     public interface IRouter
     {
-        Task<RouteResult> Route(Request req, ITrace tracer);
+        Task<RouteResult> Route(Request request, ITrace tracer);
     }
 }

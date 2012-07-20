@@ -1,43 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Edge.IO;
 using Gate;
+using VibrantUtils;
 
 namespace Edge.Routing
 {
     public class DefaultRouter : IRouter
     {
-        private static readonly HashSet<string> KnownExtensions = new HashSet<string>(new string[] {
+        private HashSet<string> _knownExtensions = new HashSet<string>(new string[] {
             ".cshtml"
-        });
+        }, StringComparer.OrdinalIgnoreCase);
+        
+        private HashSet<string> _defaultDocumentNames = new HashSet<string>(new string[] {
+            "Default",
+            "Index"
+        }, StringComparer.OrdinalIgnoreCase);
 
-        public IFileSystem FileSystem { get; private set; }
+        public IFileSystem FileSystem { get; protected set; }
+
+        public ISet<string> KnownExtensions
+        {
+            get { return _knownExtensions; }
+        }
+
+        public ISet<string> DefaultDocumentNames
+        {
+            get { return _defaultDocumentNames; }
+        }
+
+        protected DefaultRouter()
+        {
+        }
 
         public DefaultRouter(IFileSystem fileSystem)
         {
+            Requires.NotNull(fileSystem, "fileSystem");
+
             FileSystem = fileSystem;
         }
 
-        public async Task<RouteResult> Route(Request req, ITrace tracer)
+        public Task<RouteResult> Route(Request request, ITrace tracer)
         {
-            // Start by just adding ".cshtml" to see if we can find a matching file
-            string[] pathFragments = req.Path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            Requires.NotNull(request, "request");
+            Requires.NotNull(tracer, "tracer");
+
+            // This is so slooooow!
+            string[] pathFragments = request.Path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             for (int end = pathFragments.Length - 1; end >= 0; end--)
             {
                 Tuple<string, string> candidate = CreateCandidate(pathFragments, end);
                 foreach (string extension in KnownExtensions)
                 {
-                    IFile file = FileSystem.GetFile(candidate.Item1 + extension);
+                    string physicalPath = candidate.Item1.Replace('/', Path.DirectorySeparatorChar);
+                    IFile file = FileSystem.GetFile(physicalPath + extension);
                     if (file.Exists)
                     {
-                        return RouteResult.Successful(file, candidate.Item2);
+                        return Task.FromResult(RouteResult.Successful(file, candidate.Item2));
+                    }
+                    else
+                    {
+                        // Try "[name]/Default.cshtml"
+                        foreach (string docNames in DefaultDocumentNames)
+                        {
+                            file = FileSystem.GetFile(Path.Combine(physicalPath, docNames + extension));
+                            if (file.Exists)
+                            {
+                                return Task.FromResult(RouteResult.Successful(file, candidate.Item2));
+                            }
+                        }
                     }
                 }
             }
-            return RouteResult.Failed();
+            return Task.FromResult(RouteResult.Failed());
         }
 
         private static Tuple<string, string> CreateCandidate(string[] pathFragments, int end)

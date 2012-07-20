@@ -88,7 +88,6 @@
     <Compile Include="Compilation\TimestampContentIdentifier.cs" />
     <Compile Include="DisposableAction.cs" />
     <Compile Include="EdgeApplication.cs" />
-    <Compile Include="ErrorPageMiddleware.cs" />
     <Compile Include="Execution\ActivationResult.cs" />
     <Compile Include="Execution\DefaultPageActivator.cs" />
     <Compile Include="Execution\DefaultPageExecutor.cs" />
@@ -96,8 +95,6 @@
     <Compile Include="Execution\IPageActivator.cs" />
     <Compile Include="Execution\IPageExecutor.cs" />
     <Compile Include="GateTrace.cs" />
-    <Compile Include="IHttpException.cs" />
-    <Compile Include="IMultiErrorException.cs" />
     <Compile Include="IO\IFile.cs" />
     <Compile Include="IO\IFileSystem.cs" />
     <Compile Include="IO\PhysicalFile.cs" />

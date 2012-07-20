@@ -227,7 +227,16 @@ namespace Edge.Facts
             EdgeApplication app = del.Target as EdgeApplication;
             Assert.NotNull(app);
             Assert.Equal(virtualPath, app.VirtualRoot);
-            Assert.Equal(expectedFs, app.FileSystem);
+            if (expectedFs is PhysicalFileSystem)
+            {
+                Assert.Equal(
+                    expectedFs.Root,
+                    Assert.IsType<PhysicalFileSystem>(app.FileSystem).Root);
+            }
+            else
+            {
+                Assert.Equal(expectedFs, app.FileSystem);
+            }
             Assert.Equal(del.Method, TheStartMethod);
         }
     }

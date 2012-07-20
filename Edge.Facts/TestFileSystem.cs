@@ -9,7 +9,7 @@ namespace Edge.Facts
 {
     class TestFileSystem : IFileSystem
     {
-        private Dictionary<string, IFile> _testFiles = new Dictionary<string, IFile>();
+        private Dictionary<string, IFile> _testFiles = new Dictionary<string, IFile>(StringComparer.OrdinalIgnoreCase);
 
         public string Root { get; private set; }
 
@@ -26,6 +26,11 @@ namespace Edge.Facts
                 return new TestFile(Path.Combine(Root, path), path);
             }
             return file;
+        }
+
+        public IFile AddTestFile(string path)
+        {
+            return AddTestFile(path, "Content is irrelevant!");
         }
 
         public IFile AddTestFile(string path, string content)

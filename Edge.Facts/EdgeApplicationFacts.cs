@@ -124,7 +124,7 @@ namespace Edge.Facts
                 var appDel = app.Start(delegation.Next);
 
                 // Act
-                await appDel(CreateRequest(path: "/Bar"));
+                await appDel(TestData.CreateCallParams(path: "/Bar"));
 
                 // Assert
                 Assert.True(delegation.NextWasCalled);
@@ -140,7 +140,7 @@ namespace Edge.Facts
                 var appDel = app.Start(delegation.Next);
 
                 // Act
-                await appDel(CreateRequest(path: "/Bar"));
+                await appDel(TestData.CreateCallParams(path: "/Bar"));
 
                 // Assert
                 Assert.True(delegation.NextWasCalled);
@@ -166,7 +166,7 @@ namespace Edge.Facts
                    .Returns(Task.FromResult(CompilationResult.Failed(expected)));
 
                 // Act
-                var ex = await AssertEx.Throws<CompilationFailedException>(async () => await appDel(CreateRequest(path: "/Bar")));
+                var ex = await AssertEx.Throws<CompilationFailedException>(async () => await appDel(TestData.CreateCallParams(path: "/Bar")));
 
                 // Assert
                 Assert.Equal(
@@ -195,7 +195,7 @@ namespace Edge.Facts
                    .Returns(ActivationResult.Failed());
 
                 // Act
-                var ex = await AssertEx.Throws<ActivationFailedException>(async () => await appDel(CreateRequest(path: "/Bar")));
+                var ex = await AssertEx.Throws<ActivationFailedException>(async () => await appDel(TestData.CreateCallParams(path: "/Bar")));
 
                 // Assert
                 Assert.Equal(
@@ -234,7 +234,7 @@ namespace Edge.Facts
                    .Returns(Task.FromResult(resp));
 
                 // Act
-                var result = await appDel(CreateRequest(path: "/Bar"));
+                var result = await appDel(TestData.CreateCallParams(path: "/Bar"));
 
                 // Assert
                 Assert.Equal(418, result.Status);
@@ -245,26 +245,6 @@ namespace Edge.Facts
         private static TestableEdgeApplication CreateEdgeApp(string virtualRoot = "/")
         {
             return new TestableEdgeApplication(virtualRoot);
-        }
-
-        private static CallParameters CreateRequest(
-            string method = "GET",
-            string path = "/",
-            string pathBase = "",
-            string queryString = "",
-            string scheme = "http",
-            string version = "1.0")
-        {
-            var cp = new CallParameters();
-            cp.Environment = new Dictionary<string, object>() {
-                {"owin.RequestMethod", method},
-                {"owin.RequestPath", path},
-                {"owin.RequestPathBase", pathBase},
-                {"owin.RequestQueryString", queryString},
-                {"owin.RequestScheme", scheme},
-                {"owin.Version", version}
-            };
-            return cp;
         }
 
         private class TestableEdgeApplication : EdgeApplication

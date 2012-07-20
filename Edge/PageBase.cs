@@ -14,11 +14,12 @@ namespace Edge
         public Request Request { get; private set; }
         public Response Response { get; private set; }
 
-        public async Task Run(Request req, Response resp)
+        public Task Run(Request req, Response resp)
         {
             Request = req;
             Response = resp;
             Execute();
+            return Task.FromResult(new object());
         }
 
         public abstract void Execute();

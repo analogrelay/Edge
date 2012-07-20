@@ -33,7 +33,7 @@ namespace Edge.Compilation
             return String.Equals(file.Extension, ".cshtml");
         }
 
-        public async Task<CompilationResult> Compile(IFile file)
+        public Task<CompilationResult> Compile(IFile file)
         {
             string className = MakeClassName(file.Name);
             RazorTemplateEngine engine = new RazorTemplateEngine(new RazorEngineHost(new CSharpRazorCodeLanguage())
@@ -62,7 +62,7 @@ namespace Edge.Compilation
             }
 
             // Regardless of success or failure, we're going to try and compile
-            return CompileCSharp("EdgeCompiled." + className, file, results.Success, messages, results.GeneratedCode);
+            return Task.FromResult(CompileCSharp("EdgeCompiled." + className, file, results.Success, messages, results.GeneratedCode));
         }
 
         private CompilationResult CompileCSharp(string fullClassName, IFile file, bool success, List<CompilationMessage> messages, CodeCompileUnit codeCompileUnit)
