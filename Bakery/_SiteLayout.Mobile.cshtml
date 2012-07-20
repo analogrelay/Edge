@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>My Mobile Web Page - @Page.Title</title> 
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">        
+        <link rel="stylesheet" href="~/Content/jquery.mobile-1.0.min.css" />
+        <link rel="stylesheet" href="~/Content/Site.mobile.css" />
+        <script src="~/Scripts/modernizr-2.0.6-development-only.js"></script>
+        <script src="~/Scripts/jquery-1.6.4.min.js"></script>
+        <script src="~/Scripts/jquery.mobile-1.0.min.js"></script>
+        @RenderSection("Scripts", required: false)
+    </head>
+    <body>
+        <div data-role="page" data-theme="m">
+            <div data-role="header" data-theme="m">
+                <h1 id="header"><a href="~/"><img src="~/Images/brand.png" alt="Fourth Coffee" style="max-width: 100%;" width="340px"/></a></h1>
+
+                <div id="nav" data-role="navbar">
+                    <ul>
+                        <li><a href="~/" data-theme="c">Home</a></li>
+                        <li><a href="~/About/" data-ajax="false" data-theme="c">About Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div data-role="content" data-theme="m">    
+                @RenderBody()
+            </div>
+            <footer>
+                &copy;@DateTime.Now.Year - Fourth Coffee
+            </footer>
+        </div>
+    </body>
+</html>

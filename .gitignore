@@ -33,3 +33,4 @@ packages/
 *.ldf
 TestResults/
 .cache/
+Bakery/App_Data/bakery.sdf

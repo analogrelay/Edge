@@ -1,0 +1,50 @@
+﻿@{
+    Page.Title = "Home";
+
+    var db = Database.Open("bakery");
+    var products = db.Query("SELECT * FROM PRODUCTS").ToList();
+    var featured = products[new Random().Next(products.Count)];
+}
+
+<h1>Welcome to Fourth Coffee!</h1>
+
+<div id="featuredProduct">
+    <img alt="Featured Product" src="~/Images/Products/@featured.ImageName"/>
+    <div id="featuredProductInfo">
+        <div id="productInfo">
+            <h2>@featured.Name</h2>
+            <p class="price">$@string.Format("{0:f}", featured.Price)</p>
+            <p class="description">@featured.Description</p>
+        </div>
+        <div id="callToAction">
+            <a class="order-button" href="~/order/@featured.Id" title="Order @featured.Name">Order Now</a>
+        </div>
+    </div>
+</div>
+
+<div id="productsWrapper">
+    <ul id="products" data-role="listview" data-inset="true">
+        @foreach (var p in products) {
+            <li class="product">
+                <a href="~/order/@p.Id" title="Order @p.Name">
+                    <img class="hide-from-desktop" src="~/Images/Products/Thumbnails/@p.ImageName" alt="Image of @p.Name" />
+                
+                    <div class="productInfo">
+                        <h3>@p.Name</h3>
+                        <img class="product-image hide-from-mobile" src="~/Images/Products/Thumbnails/@p.ImageName" alt="Image of @p.Name" />
+                        <p class="description">@p.Description</p>
+                        <p class="price hide-from-desktop">$@string.Format("{0:f}", p.Price)</p>                    
+                    </div>
+                </a>
+
+                <!-- Desktop only -->
+                <div class="action  hide-from-mobile">
+                    <p class="price">$@string.Format("{0:f}", p.Price)</p>
+                    <a class="order-button" href="~/order/@p.Id" title="Order @p.Name">Order Now</a>
+                </div>
+                 
+            </li>
+
+        }
+    </ul>
+</div>

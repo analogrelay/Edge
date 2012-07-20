@@ -7,12 +7,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D147DA9E-418A-4523-BECD-710E7CD62C9D}</ProjectGuid>
+    <ProjectGuid>{6CDA3465-2BB1-4B71-8132-A8AA1593D38F}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EdgeDemo</RootNamespace>
-    <AssemblyName>EdgeDemo</AssemblyName>
+    <RootNamespace>Bakery</RootNamespace>
+    <AssemblyName>Bakery</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -30,7 +30,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,52 +40,84 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gate, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Gate.0.11\lib\net40\Gate.dll</HintPath>
-    </Reference>
-    <Reference Include="Gate.Middleware, Version=0.3.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Gate.Middleware.0.3.6\lib\net40\Gate.Middleware.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Owin, Version=0.11.0.0, Culture=neutral, PublicKeyToken=f585506a2da1fef4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Owin.0.11\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ReadMe.txt" />
-    <Content Include="Sub\Page.cshtml" />
+    <Content Include="App_Data\bakery.sdf" />
+    <Content Include="Content\Images\ajax-loader.png" />
+    <Content Include="Content\Images\icons-18-black.png" />
+    <Content Include="Content\Images\icons-18-white.png" />
+    <Content Include="Content\Images\icons-36-black.png" />
+    <Content Include="Content\Images\icons-36-white.png" />
+    <Content Include="Content\jquery.mobile-1.0.css" />
+    <Content Include="Content\jquery.mobile-1.0.min.css" />
+    <Content Include="Content\jquery.mobile.structure-1.0.css" />
+    <Content Include="Content\jquery.mobile.structure-1.0.min.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Content\Site.mobile.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Images\bkg.png" />
+    <Content Include="Images\brand.png" />
+    <Content Include="Images\Products\bread.jpg" />
+    <Content Include="Images\Products\carrot_cake.jpg" />
+    <Content Include="Images\Products\chocolate_cake.jpg" />
+    <Content Include="Images\Products\cupcakes.jpg" />
+    <Content Include="Images\Products\lemon_tart.jpg" />
+    <Content Include="Images\Products\pear_tart.jpg" />
+    <Content Include="Images\Products\Thumbnails\bread.jpg" />
+    <Content Include="Images\Products\Thumbnails\carrot_cake.jpg" />
+    <Content Include="Images\Products\Thumbnails\chocolate_cake.jpg" />
+    <Content Include="Images\Products\Thumbnails\cupcakes.jpg" />
+    <Content Include="Images\Products\Thumbnails\lemon_tart.jpg" />
+    <Content Include="Images\Products\Thumbnails\pear_tart.jpg" />
+    <Content Include="robots.txt" />
+    <Content Include="packages.config" />
+    <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.6.4.js" />
+    <Content Include="Scripts\jquery-1.6.4.min.js">
+      <DependentUpon>jquery-1.6.4.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery.mobile-1.0.js" />
+    <Content Include="Scripts\jquery.mobile-1.0.min.js">
+      <DependentUpon>jquery.mobile-1.0.js</DependentUpon>
+    </Content>
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js">
+      <DependentUpon>jquery.validate.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js">
+      <DependentUpon>jquery.validate.unobtrusive.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Sub\SubSub\Page.cshtml" />
+    <Content Include="About.cshtml" />
+    <Content Include="Default.cshtml" />
+    <Content Include="Order.cshtml" />
+    <Content Include="OrderSuccess.cshtml" />
+    <Content Include="_PageStart.cshtml" />
+    <Content Include="_SiteLayout.cshtml" />
+    <Content Include="_SiteLayout.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Page.cshtml" />
+    <Reference Include="Gate">
+      <HintPath>..\packages\Gate.0.11\lib\net40\Gate.dll</HintPath>
+    </Reference>
+    <Reference Include="Gate.Middleware">
+      <HintPath>..\packages\Gate.Middleware.0.3.6\lib\net40\Gate.Middleware.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.0.11\lib\net40\Owin.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Edge\Edge.csproj">
       <Project>{dbf3e801-50b9-4725-9755-67ff118e9b0e}</Project>
       <Name>Edge</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="web.config" />
-    <Content Include="web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </Content>
-    <Content Include="web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -101,9 +132,9 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>29832</DevelopmentServerPort>
+          <DevelopmentServerPort>63302</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:29299/</IISUrl>
+          <IISUrl>http://localhost:63219/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>True</UseCustomServer>
           <CustomServerUrl>http://localhost:8080</CustomServerUrl>
