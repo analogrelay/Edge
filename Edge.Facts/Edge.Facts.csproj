@@ -87,6 +87,11 @@
       <Project>{dbf3e801-50b9-4725-9755-67ff118e9b0e}</Project>
       <Name>Edge</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KillScreen.Interop\KillScreen.Interop.csproj">
+      <Project>{c7a9b90d-8cdb-405b-8c4a-b84ee33779c1}</Project>
+      <Name>KillScreen.Interop</Name>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CommonResources.resx">

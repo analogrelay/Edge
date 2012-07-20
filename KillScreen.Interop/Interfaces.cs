@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-//[assembly: ImportedFromTypeLib("KillScreen.tlb")]
+[assembly: ImportedFromTypeLib("KillScreen.tlb")]
 
 namespace KillScreen.Interop
 {
@@ -21,6 +21,7 @@ namespace KillScreen.Interop
     [Guid("1D42BE62-1DD2-4AA5-A17B-67A607D2E188")]
     public interface IMultiMessageException
     {
+        string MessageListTitle { get; }
         IEnumerable<IErrorMessage> Messages { get; }
     }
 
@@ -34,9 +35,8 @@ namespace KillScreen.Interop
 
     public struct FileLocation
     {
-        public string FileName { get; set; }
-        public int LineNumber { get; set; }
-        public int Column { get; set; }
-        public int AbsoluteOffset { get; set; }
+        public string FileName;
+        public int? LineNumber;
+        public int? Column;
     }
 }

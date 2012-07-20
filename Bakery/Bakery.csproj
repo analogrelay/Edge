@@ -92,6 +92,7 @@
       <DependentUpon>jquery.validate.unobtrusive.js</DependentUpon>
     </Content>
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
+    <Content Include="Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.cshtml" />
@@ -117,6 +118,10 @@
     <ProjectReference Include="..\Edge\Edge.csproj">
       <Project>{dbf3e801-50b9-4725-9755-67ff118e9b0e}</Project>
       <Name>Edge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KillScreen\KillScreen.csproj">
+      <Project>{17f5a688-af2f-476e-9e55-11f102043311}</Project>
+      <Name>KillScreen</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

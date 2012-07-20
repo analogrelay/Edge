@@ -38,15 +38,13 @@ namespace Edge.Compilation
             string className = MakeClassName(file.Name);
             RazorTemplateEngine engine = new RazorTemplateEngine(new RazorEngineHost(new CSharpRazorCodeLanguage())
             {
-                DefaultNamespace = "EdgeCompiled",
-                DefaultClassName = className,
                 DefaultBaseClass = "Edge.PageBase"
             });
 
             GeneratorResults results;
             using (TextReader rdr = file.OpenRead())
             {
-                results = engine.GenerateCode(rdr);
+                results = engine.GenerateCode(rdr, className, "EdgeCompiled", file.FullPath);
             }
 
             List<CompilationMessage> messages = new List<CompilationMessage>();
@@ -76,11 +74,11 @@ namespace Edge.Compilation
             }
 
             // Parse
-            SyntaxTree tree = SyntaxTree.ParseCompilationUnit(code.ToString(), file.Path);
+            SyntaxTree tree = SyntaxTree.ParseCompilationUnit(code.ToString(), "__Generated.cs");
 
             // Create a compilation
             CSCompilation comp = CSCompilation.Create(
-                "Generated.cs", 
+                "Compiled",
                 CompilationOptions.Default
                                   .WithOutputKind(OutputKind.DynamicallyLinkedLibrary), 
                 syntaxTrees: new [] { tree }, 
@@ -103,12 +101,13 @@ namespace Edge.Compilation
             }
             else {
                 foreach(var diagnostic in result.Diagnostics) {
-                    var linePosition = diagnostic.Location.GetLineSpan(true).StartLinePosition;
+                    var span = diagnostic.Location.GetLineSpan(true);
+                    var linePosition = span.StartLinePosition;
                     messages.Add(new CompilationMessage(
                         SeverityMap[diagnostic.Info.Severity], 
                         diagnostic.Info.GetMessage(), 
                         new FileLocation(
-                            file.Path,
+                            span.Path,
                             linePosition.Line,
                             linePosition.Character)));
                 }

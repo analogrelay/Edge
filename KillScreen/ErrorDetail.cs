@@ -2,14 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KillScreen.Interop;
 
 namespace KillScreen
 {
     public class ErrorDetail
     {
-        public Guid UniqueId { get; private set; }
-        public string UserMessage { get; private set; }
-        public string DetailMessage { get; private set; }
-        public IEnumerable<ErrorSolution> KnownSolutions { get; private set; }        
+        public Uri UniqueId { get; private set; }
+        public string Message { get; private set; }
+        public FileLocation Location { get; private set; }
+
+        public ErrorDetail(string message)
+        {
+            Message = message;
+            Location = new FileLocation() { FileName = null };
+        }
+
+        public ErrorDetail(string message, FileLocation location)
+        {
+            Message = message;
+            Location = location;
+        }
     }
 }

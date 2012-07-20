@@ -4,11 +4,12 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Edge.Compilation;
+using KillScreen.Interop;
 
 namespace Edge
 {
     [Serializable]
-    public class CompilationFailedException : Exception
+    public class CompilationFailedException : Exception, IMultiMessageException
     {
         public IList<CompilationMessage> Messages { get; private set; }
 
@@ -58,6 +59,19 @@ namespace Edge
             {
                 info.AddValue("Messages[" + i + "]", Messages[i]);
             }
+        }
+
+        IEnumerable<IErrorMessage> IMultiMessageException.Messages
+        {
+            get
+            {
+                return Messages.Select(cm => new ErrorMessage(cm));
+            }
+        }
+
+        string IMultiMessageException.MessageListTitle
+        {
+            get { return "Compilation Errors"; }
         }
     }
 }

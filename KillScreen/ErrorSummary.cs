@@ -9,6 +9,8 @@ namespace KillScreen
     {
         public string Summary { get; set; }
         public string ErrorListTitle { get; set; }
+        public int StatusCode { get; set; }
+        public string ReasonPhrase { get; set; }
         public Exception Exception { get; set; }
         public IEnumerable<ErrorDetail> Errors { get; set; }
     }

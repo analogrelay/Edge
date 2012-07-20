@@ -11,7 +11,7 @@ namespace KillScreen
     {
         public static IAppBuilder UseKillScreen(this IAppBuilder builder)
         {
-            builder.Use<AppDelegate>(new KillScreenMiddleware().Start);
+            return builder.Use<AppDelegate>(new KillScreenMiddleware().Start);
         }
     }
 }

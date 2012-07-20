@@ -5,8 +5,8 @@ using System.Text;
 
 namespace KillScreen
 {
-    public interface IExceptionProcessor
+    public interface IExceptionAnalyzer
     {
-        ErrorSummary Process(Exception ex);
+        ErrorSummary Analyze(Exception ex);
     }
 }
