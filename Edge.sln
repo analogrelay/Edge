@@ -30,6 +30,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillScreen", "KillScreen\Ki
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillScreen.Interop", "KillScreen.Interop\KillScreen.Interop.csproj", "{C7A9B90D-8CDB-405B-8C4A-B84EE33779C1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{F20BAD67-4733-46AF-83AF-437154B58D23}"
+	ProjectSection(SolutionItems) = preProject
+		Sakefile.shade = Sakefile.shade
+		build.cmd = build.cmd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
