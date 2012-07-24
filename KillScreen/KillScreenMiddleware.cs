@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Gate;
 using KillScreen.Templates;
 using Owin;
 
@@ -56,22 +55,28 @@ namespace KillScreen
                 details = GenerateNoProcessorsError(ex);
             }
 
-            // Generate the HTML
-            ErrorPageBuilder builder = new ErrorPageBuilder(details);
-
-            Response resp = new Response(details.StatusCode);
-            resp.Start();
-            resp.ReasonPhrase = details.ReasonPhrase;
-            resp.ContentType = "text/html";
-
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter w = new StringWriter(sb))
+            return new ResultParameters
             {
-                builder.Write(w);
-            }
-            resp.Write(sb.ToString());
-            resp.End();
-            return resp.GetResultAsync().Result; //Good idea? Probably not...
+                Status = details.StatusCode,
+                Properties = new Dictionary<string, object>() 
+                {
+                    {"owin.ReasonPhrase", details.ReasonPhrase},
+                },
+                Headers = new Dictionary<string, string[]>() 
+                {
+                    {"Content-Type", new[]{"text/html"}}
+                },
+                Body = (output, cancel) =>
+                {
+                    using (var writer = new StreamWriter(output))
+                    {
+                        // Generate the HTML
+                        var builder = new ErrorPageBuilder(details);
+                        builder.Write(writer);
+                    }
+                    return TaskHelpers.Completed();
+                }
+            };
         }
 
         private ErrorSummary GenerateNoProcessorsError(Exception ex)
