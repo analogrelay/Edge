@@ -36,13 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Gate.0.11\lib\net40\Gate.dll</HintPath>
     </Reference>
-    <Reference Include="Gate.Builder">
-      <HintPath>..\packages\Gate.Builder.0.11\lib\net40\Gate.Builder.dll</HintPath>
-    </Reference>
-    <Reference Include="Gate.Middleware, Version=0.3.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Gate.Middleware.0.3.6\lib\net40\Gate.Middleware.dll</HintPath>
-    </Reference>
     <Reference Include="Owin, Version=0.11.0.0, Culture=neutral, PublicKeyToken=f585506a2da1fef4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Owin.0.11\lib\net40\Owin.dll</HintPath>
