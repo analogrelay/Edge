@@ -112,6 +112,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Edge.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

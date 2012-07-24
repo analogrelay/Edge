@@ -1,5 +1,5 @@
 
-var PROJECT='edge'
+var PROJECT='Edge'
 var VERSION='0.1'
 var FULL_VERSION='${VERSION}'
 var AUTHORS='${PROJECT} contributors'
