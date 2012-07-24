@@ -1,0 +1,35 @@
+
+var PROJECT='Edge'
+var VERSION='0.1'
+var FULL_VERSION='${VERSION}'
+var AUTHORS='${PROJECT} contributors'
+
+var BASE_DIR='${Directory.GetCurrentDirectory()}'
+var TARGET_DIR='${Path.Combine(BASE_DIR, "target")}'
+var BUILD_DIR='${Path.Combine(TARGET_DIR, "build")}'
+var TEST_DIR='${Path.Combine(TARGET_DIR, "test")}'
+
+var TEST_PROJECTS='${Files.Include("**/*.Facts.csproj")}'
+var TEST_ASSEMBLIES='${Files.Include("target/test/**/*.Facts.dll")}'
+
+
+-// include range of standard general targets. run "sake targets" to display
+use-standard-lifecycle
+
+-// include sets of standard work targets. features include 'nuget,xunit,nunit'
+use-standard-goals features='nuget,xunit'
+
+-// additional work targets are defined below
+
+#start
+  var KATANA_VERSION='0.2'
+  var KATANA_EXE='packages/Katana.${KATANA_VERSION}/bin/Katana.exe'
+
+  build projectFile='Bakery/Bakery.csproj' configuration='Release'
+  nuget-install if='!File.Exists(KATANA_EXE)' package='Katana' packageVersion='${KATANA_VERSION}' outputDir='packages'
+
+  -// launch default browser after short delay
+  exec program='cmd' commandline='/C start /MIN cmd /C "ping localhost -n 2 && start http://localhost:8080"'
+  
+  -// run katana in bakery directory
+  exec-clr program='${KATANA_EXE}' workingdir='Bakery'

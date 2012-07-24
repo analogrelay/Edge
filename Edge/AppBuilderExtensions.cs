@@ -5,7 +5,6 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Gate.Middleware;
 using System.Diagnostics;
 using Edge.IO;
 using Edge.Routing;
